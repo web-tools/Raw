@@ -1,0 +1,30 @@
+{
+    "name": "webtools/raw",
+    "description": "A CRUD package for Laravel inspired by the Grocery CRUD library for Codeigniter.
+ * Using this you can create your entire c.r.u.d (Create Read Update Delete) interface in a matter of minutes",
+    "version": "0.5",
+    "authors": [
+        {
+            "name": "Adrian Gheorghe",
+            "email": "adrian.gheorghe02@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "illuminate/support": "4.1.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations",
+            "src/controllers"
+        ],
+        "psr-0": {
+            "Webtools\\Raw\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+     "license": [
+       "LGPL-2.1",
+       "GPL-3.0+"
+    ]
+}
