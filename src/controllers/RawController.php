@@ -7,7 +7,49 @@ class RawController extends Controller {
 
 	
 
-	public function index($action = false,$id = false)
+	public function index()
+	{
+		$raw = new Webtools\Raw\Raw('list',false,$this);
+
+		$raw->setTable('raw_actor');
+		$raw->order('last_update','asc');
+		$raw->unsetOptions(array());
+		
+		$raw->setTitle('Actors');
+		$raw->fields(
+					array(
+							'actor_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>true),		
+							'first_name'=>array('column'=>true,'title_key'=>true),						
+							'last_name'=>array('column'=>true),						
+							'last_update'=>array('column'=>true,'readonly'=>true,'title'=>'Date'),						
+						)
+					);
+
+
+
+		$this->data['raw'] = $raw;
+		$raw->render();
+		$this->data['raw_output'] = '
+		<div class="jumbotron">
+		  <h1>Welcome to Raw!</h1>
+		  <p>A CRUD package for Laravel inspired by the Grocery CRUD library for Codeigniter</p>
+		  <p>Take a look at the examples below</p>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<ul class="list-group">
+				  <li class="list-group-item"><a href="raw_items/actors">Actors</a></li>
+				  <li class="list-group-item"><a href="raw_items/customers">Customers</a></li>
+				  <li class="list-group-item"><a href="raw_items/films">Films</a></li>
+				</ul>
+			</div>
+		</div>';
+
+		/* ADD template */
+		$this->layout = View::make($this->layout,$this->data);
+	}
+
+	public function actors($action = false,$id = false)
 	{
 		$raw = new Webtools\Raw\Raw($action,$id,$this);
 
@@ -15,13 +57,13 @@ class RawController extends Controller {
 		$raw->order('last_update','asc');
 		$raw->unsetOptions(array());
 		
-		$raw->setTitle(Webtools::t('Actors'));
+		$raw->setTitle('Actors');
 		$raw->fields(
 					array(
 							'actor_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>true),		
 							'first_name'=>array('column'=>true,'title_key'=>true),						
 							'last_name'=>array('column'=>true),						
-							'last_update'=>array('column'=>true,'readonly'=>true,'title'=>Webtools::t('Date')),						
+							'last_update'=>array('column'=>true,'readonly'=>true,'title'=>'Date'),						
 						)
 					);
 
@@ -43,38 +85,38 @@ class RawController extends Controller {
    
 	public function customers($action = false,$id = false)
 	{
-		error_reporting(E_ALL);
-
 		$raw = new Webtools\Raw\Raw($action,$id,$this);
 
-		$raw->setTable('customers');
-		$raw->order('customerName','asc');
+		$raw->setTable('raw_customer');
+		$raw->order('last_name','asc');
 		$raw->unsetOptions(array());
 		
-		$raw->setTitle(Webtools::t('Customers'));
+		$raw->setTitle('Customers');
 		$raw->fields(
 					array(
-							'customerNumber'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
-							'customerName'=>array('column'=>true,'title_key'=>true),						
-							'contactLastName'=>array('column'=>true),						
-							'contactFirstName'=>array('column'=>true),						
-							'phone'=>array('column'=>true),						
-							'addressLine1'=>array('column'=>true),						
-							'addressLine2'=>array('column'=>false),						
-							'city'=>array('column'=>true),						
-							'state'=>array('column'=>true),						
-							'postalCode'=>array('column'=>false),						
-							'country'=>array('column'=>false),						
-							'creditLimit'=>array('column'=>false),						
+							'customer_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
+							'first_name'=>array('column'=>true,'title_key'=>true),						
+							'last_name'=>array('column'=>true),						
+							'email'=>array('column'=>true),	
+							'store_id'=>array('column'=>true,'type'=>'select','title'=>'Store'),				
+							'active'=>array('column'=>true),						
+							'create_date'=>array('column'=>true,'readonly'=>true),						
+							'last_update'=>array('column'=>true,'readonly'=>true),						
+													
 						)
 					);
 
 		$raw->rules(
 					array(
-							'customerName'=>'required|digits_between:1,400',
+							'first_name'=>'required',
+							'last_name'=>'required',
 						)
 					);
 
+		$raw->relation(
+				array('field'=>'store_id','relation_table'=>'raw_store','relation_column'=>'store_id','relation_display'=>'name','relation_order'=>array('name','asc'))
+				
+			);
 
 		$this->data['raw'] = $raw;
 		$this->data['raw_output'] = $raw->render();
@@ -83,45 +125,44 @@ class RawController extends Controller {
 		$this->layout = View::make($this->layout,$this->data);
 	}
 
-   
-public function employees($action = false,$id = false)
+	public function films($action = false,$id = false)
 	{
-		error_reporting(E_ALL);
-
 		$raw = new Webtools\Raw\Raw($action,$id,$this);
 
-		$raw->setTable('employees');
-		$raw->order('employeeNumber','asc');
+		$raw->setTable('raw_film');
+		$raw->order('title','asc');
 		$raw->unsetOptions(array());
 		
-		$raw->setTitle(Webtools::t('Customers'));
+		$raw->setTitle('Films');
 		$raw->fields(
 					array(
-							'employeeNumber'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
-							'lastName'=>array('column'=>true,'title_key'=>true),						
-							'firstName'=>array('column'=>true),						
-							'extension'=>array('column'=>true),						
-							'email'=>array('column'=>true),						
-							'officeCode'=>array('column'=>true),						
-							'file_url'=>array('column'=>false),						
-							'jobTitle'=>array('column'=>true),					
+							'film_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
+							'title'=>array('column'=>true,'title_key'=>true),						
+							'description'=>array(),						
+							'release_year'=>array('column'=>true),	
+							'language_id'=>array('column'=>true),	
+							'rental_duration'=>array('column'=>true),	
+							'rental_rate'=>array('column'=>true),	
+							'length'=>array('column'=>true),	
+							'replacement_cost'=>array('column'=>true),	
+							'rating'=>array('column'=>true),	
+							'special_features'=>array('column'=>true),					
+							'last_update'=>array('column'=>true,'readonly'=>true),						
+													
+						)
+					);
+
+		$raw->rules(
+					array(
+							'title'=>'required',
+							'description'=>'required',
 						)
 					);
 
 		$raw->relation(
-				array('field'=>'officeCode','relation_table'=>'offices','relation_column'=>'officeCode','relation_display'=>'city','relation_order'=>array('city','asc'))
+				array('field'=>'language_id','relation_table'=>'raw_language','relation_column'=>'language_id','relation_display'=>'name','relation_order'=>array('name','asc'))
 				
 			);
-
-		$raw->rules(
-					array(
-							'lastName'=>'required|digits_between:1,400',
-							'firstName'=>'required|digits_between:1,400',
-							'extension'=>'required|digits_between:1,400',
-							'email'=>'required|digits_between:1,400',
-						)
-					);
-
 
 		$this->data['raw'] = $raw;
 		$this->data['raw_output'] = $raw->render();

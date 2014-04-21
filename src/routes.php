@@ -1,4 +1,5 @@
 <?php
+Route::match(array('GET', 'POST'),'raw_items/actors/{action?}/{id?}', array('uses' => 'RawController@actors'));
 Route::match(array('GET', 'POST'),'raw_items/customers/{action?}/{id?}', array('uses' => 'RawController@customers'));
-Route::match(array('GET', 'POST'),'raw_items/employees/{action?}/{id?}', array('uses' => 'RawController@employees'));
-Route::match(array('GET', 'POST'),'raw_items/{action?}/{id?}', array('uses' => 'RawController@index'));
+Route::match(array('GET', 'POST'),'raw_items/films/{action?}/{id?}', array('uses' => 'RawController@films'));
+Route::match(array('GET', 'POST'),'raw_items/', array('uses' => 'RawController@index'));
