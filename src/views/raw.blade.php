@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<title>Raw for Laravel</title>
 	<base href="<?php echo URL::to('/')?>"/>
 	<meta charset="utf-8" />
 <?php 
@@ -12,8 +13,6 @@ foreach($raw->css_files as $file): ?>
 <?php endforeach; ?>
 </head>
 <body class="example">  
-    <div>
-		<?php echo $raw_output; ?>
-    </div>
+	<?php echo $raw_output; ?>
 </body>
 </html>

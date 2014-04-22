@@ -15,6 +15,7 @@ class RawController extends Controller {
 		$raw->order('last_update','asc');
 		$raw->unsetOptions(array());
 		
+
 		$raw->setTitle('Actors');
 		$raw->fields(
 					array(
@@ -41,6 +42,10 @@ class RawController extends Controller {
 				  <li class="list-group-item"><a href="raw_items/actors">Actors</a></li>
 				  <li class="list-group-item"><a href="raw_items/customers">Customers</a></li>
 				  <li class="list-group-item"><a href="raw_items/films">Films</a></li>
+				  <li class="list-group-item"><a href="raw_items/languages">Languages</a></li>
+				  <li class="list-group-item"><a href="raw_items/countries">Countries</a></li>
+				  <li class="list-group-item"><a href="raw_items/rental">Rentals</a></li>
+				  <li class="list-group-item"><a href="raw_items/payment">Payment</a></li>
 				</ul>
 			</div>
 		</div>';
@@ -57,6 +62,7 @@ class RawController extends Controller {
 		$raw->order('last_update','asc');
 		$raw->unsetOptions(array());
 		
+		$raw->setAjaxListing();
 		$raw->setTitle('Actors');
 		$raw->fields(
 					array(
@@ -163,6 +169,138 @@ class RawController extends Controller {
 				array('field'=>'language_id','relation_table'=>'raw_language','relation_column'=>'language_id','relation_display'=>'name','relation_order'=>array('name','asc'))
 				
 			);
+
+		$this->data['raw'] = $raw;
+		$this->data['raw_output'] = $raw->render();
+
+		/* ADD template */
+		$this->layout = View::make($this->layout,$this->data);
+	}
+
+	public function languages($action = false,$id = false)
+	{
+		$raw = new Webtools\Raw\Raw($action,$id,$this);
+
+		$raw->setTable('raw_language');
+		$raw->order('name','asc');
+		$raw->unsetOptions(array());
+		
+		$raw->setTitle('Languages');
+		$raw->fields(
+					array(
+							'language_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
+							'name'=>array('column'=>true,'title_key'=>true),						
+							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>Webtools::t('Flag'),'upload_path'=>'assets/uploads/raw/languages','column'=>true),
+							'last_update'=>array('column'=>true,'readonly'=>true),						
+													
+						)
+					);
+
+		$raw->rules(
+					array(
+							'name'=>'required',
+						)
+					);
+
+		$this->data['raw'] = $raw;
+		$this->data['raw_output'] = $raw->render();
+
+		/* ADD template */
+		$this->layout = View::make($this->layout,$this->data);
+	}
+
+	public function countries($action = false,$id = false)
+	{
+		$raw = new Webtools\Raw\Raw($action,$id,$this);
+
+		$raw->setTable('raw_country');
+		$raw->order('country','asc');
+		$raw->unsetOptions(array());
+		
+		$raw->setTitle('Countries');
+		$raw->fields(
+					array(
+							'country_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
+							'country'=>array('column'=>true,'title_key'=>true),						
+							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>Webtools::t('Flag'),'upload_path'=>'assets/uploads/raw/countries','column'=>true),
+							'last_update'=>array('column'=>true,'readonly'=>true),						
+													
+						)
+					);
+
+		$raw->rules(
+					array(
+							'country'=>'required',
+						)
+					);
+
+		$this->data['raw'] = $raw;
+		$this->data['raw_output'] = $raw->render();
+
+		/* ADD template */
+		$this->layout = View::make($this->layout,$this->data);
+	}
+
+   	public function rental($action = false,$id = false)
+	{
+		$raw = new Webtools\Raw\Raw($action,$id,$this);
+
+		$raw->setTable('raw_rental');
+		$raw->order('last_update','desc');
+		$raw->unsetOptions(array());
+		
+		$raw->setAjaxListing();
+		$raw->setTitle('Rentals');
+		$raw->fields(
+					array(
+							'rental_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
+							'inventory_id'=>array('column'=>true,'title'=>'Inventory'),
+							'customer_id'=>array('column'=>true,'title'=>'Customer'),
+							'staff_id'=>array('column'=>true,'title'=>'Staff'),
+							'rental_date'=>array('column'=>true),						
+							'return_date'=>array('column'=>true),						
+							'last_update'=>array('column'=>true,'readonly'=>true),						
+													
+						)
+					);
+
+		$raw->rules(
+					array(
+							'inventory_id'=>'required',
+						)
+					);
+
+		$this->data['raw'] = $raw;
+		$this->data['raw_output'] = $raw->render();
+
+		/* ADD template */
+		$this->layout = View::make($this->layout,$this->data);
+	}
+
+   	public function payment($action = false,$id = false)
+	{
+		$raw = new Webtools\Raw\Raw($action,$id,$this);
+
+		$raw->setTable('raw_country');
+		$raw->order('country','asc');
+		$raw->unsetOptions(array());
+		
+		$raw->setTitle('Countries');
+		$raw->fields(
+					array(
+							'country_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
+							'country'=>array('column'=>true,'title_key'=>true),						
+							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>Webtools::t('Flag'),'upload_path'=>'assets/uploads/raw/countries','column'=>true),
+							'last_update'=>array('column'=>true,'readonly'=>true),						
+													
+						)
+					);
+
+		$raw->rules(
+					array(
+							'country'=>'required',
+						)
+					);
 
 		$this->data['raw'] = $raw;
 		$this->data['raw_output'] = $raw->render();

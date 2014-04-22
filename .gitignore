@@ -1,5 +1,4 @@
 /vendor
-todo.txt
 composer.phar
 composer.lock
 .DS_Store

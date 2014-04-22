@@ -11,7 +11,7 @@
  *
  * @package    	Webtools CMS
  * @copyright  	Copyright (c) 2014, Adrian Gheorghe
- * @version    	0.5
+ * @version    	0.7
  * @author     	Adrian Gheorghe <adi@adigheorghe.ro>
  */
 
@@ -48,7 +48,7 @@ Class Raw
 	private $rules = array();
 
 	private $callbacks = array();
-	private $columns;
+	private $columns = array();
 	private $fields = array();
 	public 	$relations = array();
 	private $query;
@@ -63,15 +63,17 @@ Class Raw
 	public 	$tabs =array();
 	public 	$actions =array();
 	public 	$actions_extra =array();
+	
+	public 	$ajax_listing = false;
 
 	public 	$title = 'Manage';
 	public 	$subtitle = '';
 
 	public 	$css_files = array();
 	public 	$js_files = array();
-	private $output;
+	public  $output;
 
-	public $order = array();
+	public 	$order = array();
 
 
 	function __construct($state = false,$id = false,$class)
@@ -185,6 +187,11 @@ Class Raw
 		$this->state = $state;
 	}
 
+	public function setAjaxListing()
+	{
+		$this->ajax_listing = true;
+	}
+
 	/* 
 		Alter query using where 
 	*/
@@ -232,6 +239,11 @@ Class Raw
 
 			if (isset($f['title_key']))
 				$this->title_key = $key;
+
+			if (isset($f['column']) && $f['column'])
+			{
+				$this->columns[] = $key;
+			}
 
 			$fields_new[$key] = $f;
 		}
@@ -401,7 +413,6 @@ Class Raw
 				$query_values->orderBy($r['relation_order'][0],$r['relation_order'][1]);
 			}
 			$values = $query_values->get();
-			//Webtools::pre($values);
 			$values_new = array();
 
 			
@@ -411,9 +422,6 @@ Class Raw
 			}
 			$this->fields[$r['field']]['values'] = $values_new;
 			$this->fields[$r['field']]['type'] = 'select';
-
-
-			//Webtools::pre($this->fields[$r['field']]);
 		}
 
 		if ($state == 'list_order' && !$this->parent_key && $this->order_key && empty($this->order))
@@ -421,7 +429,106 @@ Class Raw
 			$this->query = $this->query->orderBy($this->order_key,asc);
 		}
 
-		$this->items = $this->query->select($fields)->get();
+		if (Request::ajax() && Input::get('sEcho') && $this->ajax_listing)
+		{
+			$this->query_total = clone $this->query;
+			$this->query_filtered = clone $this->query;
+
+			/* Array of database columns which should be read and sent back to DataTables. Use a space where
+			 * you want to insert a non-database field (for example a counter or static image)
+			 */
+			$columns = $this->columns;
+			
+			/* Indexed column (used for fast and accurate table cardinality) */
+			$index_column = $this->primary_key;
+			
+
+			/* 
+			 * Paging
+			 */
+			$limit = "";
+			if ( Input::get('iDisplayLength') != '-1' )
+			{
+				$this->query = $this->query->skip(intval( Input::get('iDisplayStart') ))->take(intval( Input::get('iDisplayLength') ));
+			}
+
+			
+			
+			/*
+			 * Ordering
+			 */
+			
+			$order = "";
+			if ( Input::get('iSortCol_0') )
+			{
+				for ( $i=0 ; $i<intval( Input::get('iSortingCols') ) ; $i++ )
+				{
+					if ( Input::get( 'bSortable_'.intval(Input::get('iSortCol_'.$i))) == "true" )
+					{
+
+						$this->query = $this->query->orderBy($columns[ intval( Input::get('iSortCol_'.$i) ) ],(Input::get('sSortDir_'.$i)==='asc' ? 'asc' : 'desc'));
+
+					}
+				}
+			}
+			
+			
+			
+			/* 
+			 * Filtering
+			 * NOTE this does not match the built-in DataTables filtering which does it
+			 * word by word on any field. It's possible to do here, but concerned about efficiency
+			 * on very large tables, and MySQL's regex functionality is very limited
+			 */
+			
+			$sWhere = "";
+			if ( Input::get('sSearch') && Input::get('sSearch') != "" )
+			{
+				for ( $i=0 ; $i<count($columns) ; $i++ )
+				{
+					if ( Input::get('bSearchable_'.$i) && Input::get('bSearchable_'.$i) == "true" )
+					{
+						$this->query = $this->query->orWhere($columns[$i], 'LIKE', '%'.Input::get('sSearch').'%');
+						$this->query_filtered = $this->query_filtered->orWhere($columns[$i], 'LIKE', '%'.Input::get('sSearch').'%');
+						$this->query_total = $this->query_total->orWhere($columns[$i], 'LIKE', '%'.Input::get('sSearch').'%');
+					}
+				}
+			}
+			
+			/*
+			 * SQL queries
+			 * Get data to display
+			 */
+
+			$this->items = $this->query->select($fields)->get();
+
+			$total_items = $iTotal = $this->query_total->select($fields)->count();
+			$filtered_items = $iFilteredTotal = $this->query_filtered->select($fields)->count();
+			
+			/*
+			$queries = DB::getQueryLog();
+			$last_query = end($queries);
+			Webtools::pre($last_query);
+			*/
+			
+			/*
+			 * Output
+			*/
+			$this->output = array(
+				"sEcho" => intval(Input::get('sEcho')),
+				"iTotalRecords" => $iTotal,
+				"iTotalDisplayRecords" => $iFilteredTotal,
+				"aaData" => array()
+			);
+			
+			
+
+
+		}
+		else if ($this->ajax_listing)
+			$this->items = false;
+		else
+			$this->items = $this->query->select($fields)->get();
 
 		if ($this->parent_key)
 		{
@@ -554,7 +661,7 @@ Class Raw
 	{	
 		// todo ajax listing
 		// todo ajax sorting
-		if (Request::ajax() && false)
+		if (Request::ajax())
 		{
 			echo View::make('raw::list_json', array('raw'=>$this))->render();
 			exit();

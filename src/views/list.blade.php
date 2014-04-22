@@ -94,9 +94,12 @@
         $('#raw-list').dataTable(
             {
                 <?php if ($raw->order && false):?> "aaSorting": [[ <?php ?>, "desc" ]],<?php endif;?>
-                //"bProcessing": true,
-                //"sAjaxSource": "/<?php echo $raw->path?>",
-                //"sServerMethod": "POST"
+                <?php if ($raw->ajax_listing):?>
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "/<?php echo $raw->path?>",
+                "sServerMethod": "POST"
+                <?php endif;?>
 
             });
 
