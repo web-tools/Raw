@@ -39,13 +39,13 @@ class RawController extends Controller {
 		<div class="row">
 			<div class="col-md-12">
 				<ul class="list-group">
-				  <li class="list-group-item"><a href="raw_items/actors">Actors</a></li>
-				  <li class="list-group-item"><a href="raw_items/customers">Customers</a></li>
-				  <li class="list-group-item"><a href="raw_items/films">Films</a></li>
-				  <li class="list-group-item"><a href="raw_items/languages">Languages</a></li>
-				  <li class="list-group-item"><a href="raw_items/countries">Countries</a></li>
-				  <li class="list-group-item"><a href="raw_items/rental">Rentals</a></li>
-				  <li class="list-group-item"><a href="raw_items/payment">Payment</a></li>
+				  <li class="list-group-item"><a href="'.URL::to('raw_items/actors').'">Actors</a></li>
+				  <li class="list-group-item"><a href="'.URL::to('raw_items/customers').'">Customers</a></li>
+				  <li class="list-group-item"><a href="'.URL::to('raw_items/films').'">Films</a></li>
+				  <li class="list-group-item"><a href="'.URL::to('raw_items/languages').'">Languages</a></li>
+				  <li class="list-group-item"><a href="'.URL::to('raw_items/countries').'">Countries</a></li>
+				  <li class="list-group-item"><a href="'.URL::to('raw_items/rental').'">Rentals</a></li>
+				  <li class="list-group-item"><a href="'.URL::to('raw_items/payment').'">Payment</a></li>
 				</ul>
 			</div>
 		</div>';
