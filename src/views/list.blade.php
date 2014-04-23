@@ -97,7 +97,7 @@
                 <?php if ($raw->ajax_listing):?>
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "/<?php echo $raw->path?>",
+                "sAjaxSource": "<?php echo $raw->path?>",
                 "sServerMethod": "POST"
                 <?php endif;?>
 

@@ -11,7 +11,7 @@
  *
  * @package    	Webtools CMS
  * @copyright  	Copyright (c) 2014, Adrian Gheorghe
- * @version    	0.7
+ * @version    	0.5
  * @author     	Adrian Gheorghe <adi@adigheorghe.ro>
  */
 

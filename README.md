@@ -3,6 +3,8 @@ Raw
 
 A CRUD package for Laravel. Using this you can create your entire c.r.u.d (Create Read Update Delete) interface in a matter of minutes
 
+More info available on the library website http://raw.adigheorghe.ro
+
 Installation
 =============
 
