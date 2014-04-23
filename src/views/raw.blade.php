@@ -6,10 +6,10 @@
 	<meta charset="utf-8" />
 <?php 
 foreach($raw->css_files as $file): ?>
-	<link type="text/css" rel="stylesheet" href="<?php echo $file; ?>" />
+	<link type="text/css" rel="stylesheet" href="<?php echo URL::to($file); ?>" />
 <?php endforeach; ?>
 <?php foreach($raw->js_files as $file): ?>
-	<script src="<?php echo $file; ?>"></script>
+	<script src="<?php echo URL::to($file); ?>"></script>
 <?php endforeach; ?>
 </head>
 <body class="example">  
