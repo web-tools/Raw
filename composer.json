@@ -2,7 +2,7 @@
     "name": "webtools/raw",
     "description": "A CRUD package for Laravel inspired by the Grocery CRUD library for Codeigniter",
     "keywords": ["laravel", "crud", "autocrud","administration"],
-    "version": "0.6.1",
+    "version": "0.6.2",
     "authors": [
         {
             "name": "Adrian Gheorghe",
