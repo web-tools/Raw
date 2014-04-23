@@ -190,7 +190,7 @@ class RawController extends Controller {
 					array(
 							'language_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
 							'name'=>array('column'=>true,'title_key'=>true),						
-							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>Webtools::t('Flag'),'upload_path'=>'assets/uploads/raw/languages','column'=>true),
+							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>'Flag','upload_path'=>'assets/uploads/raw/languages','column'=>true),
 							'last_update'=>array('column'=>true,'readonly'=>true),						
 													
 						)
@@ -222,7 +222,7 @@ class RawController extends Controller {
 					array(
 							'country_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
 							'country'=>array('column'=>true,'title_key'=>true),						
-							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>Webtools::t('Flag'),'upload_path'=>'assets/uploads/raw/countries','column'=>true),
+							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>'Flag','upload_path'=>'assets/uploads/raw/countries','column'=>true),
 							'last_update'=>array('column'=>true,'readonly'=>true),						
 													
 						)
@@ -290,7 +290,7 @@ class RawController extends Controller {
 					array(
 							'country_id'=>array('type'=>'hidden','primary_key'=>true,'column'=>false),		
 							'country'=>array('column'=>true,'title_key'=>true),						
-							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>Webtools::t('Flag'),'upload_path'=>'assets/uploads/raw/countries','column'=>true),
+							'flag'=>array('type'=>'upload','preset'=>'image','thumbs'=>'100x100 200x400','title'=>'Flag','upload_path'=>'assets/uploads/raw/countries','column'=>true),
 							'last_update'=>array('column'=>true,'readonly'=>true),						
 													
 						)
