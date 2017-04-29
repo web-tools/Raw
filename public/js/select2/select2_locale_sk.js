@@ -3,7 +3,7 @@
  *
  * Author: David Vallner <david@vallner.net>
  */
-(function ($) {
+(($ => {
     "use strict";
     // use text for the numbers 2 through 4
     var smallNumbers = {
@@ -12,8 +12,8 @@
         4: function() { return "štyri"; }
     }
     $.extend($.fn.select2.defaults, {
-        formatNoMatches: function () { return "Nenašli sa žiadne položky"; },
-        formatInputTooShort: function (input, min) {
+        formatNoMatches() { return "Nenašli sa žiadne položky"; },
+        formatInputTooShort(input, min) {
             var n = min - input.length;
             if (n == 1) {
                 return "Prosím zadajte ešte jeden znak";
@@ -23,7 +23,7 @@
                 return "Prosím zadajte ešte ďalších "+n+" znakov";
             }
         },
-        formatInputTooLong: function (input, max) {
+        formatInputTooLong(input, max) {
             var n = input.length - max;
             if (n == 1) {
                 return "Prosím zadajte o jeden znak menej";
@@ -33,7 +33,7 @@
                 return "Prosím zadajte o "+n+" znakov menej";
             }
         },
-        formatSelectionTooBig: function (limit) {
+        formatSelectionTooBig(limit) {
             if (limit == 1) {
                 return "Môžete zvoliť len jednu položku";
             } else if (limit <= 4) {
@@ -42,7 +42,7 @@
                 return "Môžete zvoliť najviac "+limit+" položiek";
             }
         },
-        formatLoadMore: function (pageNumber) { return "Načítavajú sa ďalšie výsledky…"; },
-        formatSearching: function () { return "Vyhľadávanie…"; }
+        formatLoadMore(pageNumber) { return "Načítavajú sa ďalšie výsledky…"; },
+        formatSearching() { return "Vyhľadávanie…"; }
     });
-})(jQuery);
+}))(jQuery);

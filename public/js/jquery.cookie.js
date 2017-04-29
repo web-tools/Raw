@@ -5,7 +5,7 @@
  * Copyright 2013 Klaus Hartl
  * Released under the MIT license
  */
-(function (factory) {
+((factory => {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as anonymous module.
 		define(['jquery'], factory);
@@ -13,7 +13,7 @@
 		// Browser globals.
 		factory(jQuery);
 	}
-}(function ($) {
+})($ => {
 
 	var pluses = /\+/g;
 
@@ -35,16 +35,17 @@
 		} catch(er) {}
 	}
 
-	var config = $.cookie = function (key, value, options) {
+	var config = $.cookie = (key, value, options) => {
 
 		// write
 		if (value !== undefined) {
 			options = $.extend({}, config.defaults, options);
 
 			if (typeof options.expires === 'number') {
-				var days = options.expires, t = options.expires = new Date();
-				t.setDate(t.getDate() + days);
-			}
+                var days = options.expires;
+                var t = options.expires = new Date();
+                t.setDate(t.getDate() + days);
+            }
 
 			value = config.json ? JSON.stringify(value) : String(value);
 
@@ -83,7 +84,7 @@
 
 	config.defaults = {};
 
-	$.removeCookie = function (key, options) {
+	$.removeCookie = (key, options) => {
 		if ($.cookie(key) !== undefined) {
 			// Must not alter options, thus extending a fresh object...
 			$.cookie(key, '', $.extend({}, options, { expires: -1 }));

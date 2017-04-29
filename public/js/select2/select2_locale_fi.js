@@ -1,28 +1,28 @@
 /**
  * Select2 Finnish translation
  */
-(function ($) {
+(($ => {
     "use strict";
     $.extend($.fn.select2.defaults, {
-        formatNoMatches: function () {
+        formatNoMatches() {
             return "Ei tuloksia";
         },
-        formatInputTooShort: function (input, min) {
+        formatInputTooShort(input, min) {
             var n = min - input.length;
             return "Ole hyvä ja anna " + n + " merkkiä lisää";
         },
-        formatInputTooLong: function (input, max) {
+        formatInputTooLong(input, max) {
             var n = input.length - max;
             return "Ole hyvä ja anna " + n + " merkkiä vähemmän";
         },
-        formatSelectionTooBig: function (limit) {
+        formatSelectionTooBig(limit) {
             return "Voit valita ainoastaan " + limit + " kpl";
         },
-        formatLoadMore: function (pageNumber) {
+        formatLoadMore(pageNumber) {
             return "Ladataan lisää tuloksia…";
         },
-        formatSearching: function () {
+        formatSearching() {
             return "Etsitään…";
         }
     });
-})(jQuery);
+}))(jQuery);

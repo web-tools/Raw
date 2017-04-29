@@ -1,15 +1,15 @@
 /**
  * Select2 Spanish translation
  */
-(function ($) {
+(($ => {
     "use strict";
 
     $.extend($.fn.select2.defaults, {
-        formatNoMatches: function () { return "No se encontraron resultados"; },
-        formatInputTooShort: function (input, min) { var n = min - input.length; return "Por favor, introduzca " + n + " car" + (n == 1? "ácter" : "acteres"); },
-        formatInputTooLong: function (input, max) { var n = input.length - max; return "Por favor, elimine " + n + " car" + (n == 1? "ácter" : "acteres"); },
-        formatSelectionTooBig: function (limit) { return "Sólo puede seleccionar " + limit + " elemento" + (limit == 1 ? "" : "s"); },
-        formatLoadMore: function (pageNumber) { return "Cargando más resultados…"; },
-        formatSearching: function () { return "Buscando…"; }
+        formatNoMatches() { return "No se encontraron resultados"; },
+        formatInputTooShort(input, min) { var n = min - input.length; return "Por favor, introduzca " + n + " car" + (n == 1? "ácter" : "acteres"); },
+        formatInputTooLong(input, max) { var n = input.length - max; return "Por favor, elimine " + n + " car" + (n == 1? "ácter" : "acteres"); },
+        formatSelectionTooBig(limit) { return "Sólo puede seleccionar " + limit + " elemento" + (limit == 1 ? "" : "s"); },
+        formatLoadMore(pageNumber) { return "Cargando más resultados…"; },
+        formatSearching() { return "Buscando…"; }
     });
-})(jQuery);
+}))(jQuery);

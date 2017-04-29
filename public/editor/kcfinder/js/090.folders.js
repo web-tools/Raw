@@ -10,11 +10,11 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-_.initFolders = function() {
-    $('#folders').scroll(function() {
+_.initFolders = () => {
+    $('#folders').scroll(() => {
         _.hideDialog();
     });
-    $('div.folder > a').unbind().click(function() {
+    $('div.folder > a').unbind().click(() => {
         _.hideDialog();
         return false;
     });
@@ -24,13 +24,13 @@ _.initFolders = function() {
     });
     $('div.folder > a > span.folder').unbind().click(function() {
         _.changeDir($(this).parent());
-    }).rightClick(function(el, e) {
+    }).rightClick((el, e) => {
         $.$.unselect();
         _.menuDir($(el).parent(), e);
     });
 };
 
-_.setTreeData = function(data, path) {
+_.setTreeData = (data, path) => {
     if (!path)
         path = "";
     else if (path.length && (path.substr(path.length - 1, 1) != '/'))
@@ -39,7 +39,7 @@ _.setTreeData = function(data, path) {
     var selector = '#folders a[href="kcdir:/' + $.$.escapeDirs(path) + '"]';
     $(selector).data({
         name: data.name,
-        path: path,
+        path,
         readable: data.readable,
         writable: data.writable,
         removable: data.removable,
@@ -48,17 +48,18 @@ _.setTreeData = function(data, path) {
     $(selector + ' span.folder').addClass(data.current ? 'current' : 'regular');
     if (data.dirs && data.dirs.length) {
         $(selector + ' span.brace').addClass('opened');
-        $.each(data.dirs, function(i, cdir) {
+        $.each(data.dirs, (i, cdir) => {
             _.setTreeData(cdir, path + "/");
         });
     } else if (data.hasDirs)
         $(selector + ' span.brace').addClass('closed');
 };
 
-_.buildTree = function(root, path) {
+_.buildTree = (root, path) => {
     if (!path) path = "";
     path += root.name;
-    var cdir, html = '<div class="folder"><a href="kcdir:/' + $.$.escapeDirs(path) + '"><span class="brace">&nbsp;</span><span class="folder">' + $.$.htmlData(root.name) + '</span></a>';
+    var cdir;
+    var html = '<div class="folder"><a href="kcdir:/' + $.$.escapeDirs(path) + '"><span class="brace">&nbsp;</span><span class="folder">' + $.$.htmlData(root.name) + '</span></a>';
     if (root.dirs) {
         html += '<div class="folders">';
         for (var i = 0; i < root.dirs.length; i++) {
@@ -71,10 +72,10 @@ _.buildTree = function(root, path) {
     return html;
 };
 
-_.expandDir = function(dir) {
+_.expandDir = dir => {
     var path = dir.data('path');
     if (dir.children('.brace').hasClass('opened')) {
-        dir.parent().children('.folders').hide(500, function() {
+        dir.parent().children('.folders').hide(500, () => {
             if (path == _.dir.substr(0, path.length))
                 _.changeDir(dir);
         });
@@ -85,22 +86,22 @@ _.expandDir = function(dir) {
             dir.children('.brace').removeClass('closed').addClass('opened');
         } else if (!$('#loadingDirs').get(0)) {
             dir.parent().append('<div id="loadingDirs">' + _.label("Loading folders...") + '</div>');
-            $('#loadingDirs').css('display', "none").show(200, function() {
+            $('#loadingDirs').css('display', "none").show(200, () => {
                 $.ajax({
                     type: "post",
                     dataType: "json",
                     url: _.baseGetData("expand"),
                     data: {dir: path},
                     async: false,
-                    success: function(data) {
-                        $('#loadingDirs').hide(200, function() {
+                    success(data) {
+                        $('#loadingDirs').hide(200, () => {
                             $('#loadingDirs').detach();
                         });
                         if (_.check4errors(data))
                             return;
 
                         var html = "";
-                        $.each(data.dirs, function(i, cdir) {
+                        $.each(data.dirs, (i, cdir) => {
                             html += '<div class="folder"><a href="kcdir:/' + $.$.escapeDirs(path + '/' + cdir.name) + '"><span class="brace">&nbsp;</span><span class="folder">' + $.$.htmlData(cdir.name) + '</span></a></div>';
                         });
                         if (html.length) {
@@ -108,7 +109,7 @@ _.expandDir = function(dir) {
                             var folders = $(dir.parent().children('.folders').first());
                             folders.css('display', "none");
                             $(folders).show(500);
-                            $.each(data.dirs, function(i, cdir) {
+                            $.each(data.dirs, (i, cdir) => {
                                 _.setTreeData(cdir, path);
                             });
                         }
@@ -119,7 +120,7 @@ _.expandDir = function(dir) {
                         _.initFolders();
                         _.initDropUpload();
                     },
-                    error: function() {
+                    error() {
                         $('#loadingDirs').detach();
                         _.alert(_.label("Unknown error."));
                     }
@@ -129,7 +130,7 @@ _.expandDir = function(dir) {
     }
 };
 
-_.changeDir = function(dir) {
+_.changeDir = dir => {
     if (dir.children('span.folder').hasClass('regular')) {
         $('div.folder > a > span.folder').removeClass('current regular').addClass('regular');
         dir.children('span.folder').removeClass('regular');
@@ -141,7 +142,7 @@ _.changeDir = function(dir) {
             url: _.baseGetData("chDir"),
             data: {dir:dir.data('path')},
             async: false,
-            success: function(data) {
+            success(data) {
                 if (_.check4errors(data))
                     return;
                 _.files = data.files;
@@ -154,21 +155,21 @@ _.changeDir = function(dir) {
                     tinyMCEPopup.editor.windowManager.setTitle(window, title);
                 _.statusDir();
             },
-            error: function() {
+            error() {
                 $('#files').html(_.label("Unknown error."));
             }
         });
     }
 };
 
-_.statusDir = function() {
+_.statusDir = () => {
     for (var i = 0, size = 0; i < _.files.length; i++)
         size += parseInt(_.files[i].size);
     size = _.humanSize(size);
     $('#fileinfo').html(_.files.length + " " + _.label("files") + " (" + size + ")");
 };
 
-_.menuDir = function(dir, e) {
+_.menuDir = (dir, e) => {
     var data = dir.data();
     var html = '<ul>';
     if (_.clipboard && _.clipboard.length) {
@@ -207,32 +208,32 @@ _.menuDir = function(dir, e) {
 
     if (_.clipboard && _.clipboard.length && data.writable) {
 
-        $('#dialog a[href="kcact:cpcbd"]').click(function() {
+        $('#dialog a[href="kcact:cpcbd"]').click(() => {
             _.hideDialog();
             _.copyClipboard(data.path);
             return false;
         });
 
-        $('#dialog a[href="kcact:mvcbd"]').click(function() {
+        $('#dialog a[href="kcact:mvcbd"]').click(() => {
             _.hideDialog();
             _.moveClipboard(data.path);
             return false;
         });
     }
 
-    $('#dialog a[href="kcact:refresh"]').click(function() {
+    $('#dialog a[href="kcact:refresh"]').click(() => {
         _.hideDialog();
         _.refreshDir(dir);
         return false;
     });
 
-    $('#dialog a[href="kcact:download"]').click(function() {
+    $('#dialog a[href="kcact:download"]').click(() => {
         _.hideDialog();
         _.post(_.baseGetData("downloadDir"), {dir:data.path});
         return false;
     });
 
-    $('#dialog a[href="kcact:mkdir"]').click(function(e) {
+    $('#dialog a[href="kcact:mkdir"]').click(e => {
         if (!data.writable) return false;
         _.hideDialog();
         _.fileNameDialog(
@@ -242,7 +243,7 @@ _.menuDir = function(dir, e) {
                 errEmpty: "Please enter new folder name.",
                 errSlash: "Unallowable characters in folder name.",
                 errDot: "Folder name shouldn't begins with '.'"
-            }, function() {
+            }, () => {
                 _.refreshDir(dir);
                 _.initDropUpload();
                 if (!data.hasDirs) {
@@ -254,7 +255,7 @@ _.menuDir = function(dir, e) {
         return false;
     });
 
-    $('#dialog a[href="kcact:mvdir"]').click(function(e) {
+    $('#dialog a[href="kcact:mvdir"]').click(e => {
         if (!data.removable) return false;
         _.hideDialog();
         _.fileNameDialog(
@@ -264,7 +265,7 @@ _.menuDir = function(dir, e) {
                 errEmpty: "Please enter new folder name.",
                 errSlash: "Unallowable characters in folder name.",
                 errDot: "Folder name shouldn't begins with '.'"
-            }, function(dt) {
+            }, dt => {
                 if (!dt.name) {
                     _.alert(_.label("Unknown error."));
                     return;
@@ -282,23 +283,23 @@ _.menuDir = function(dir, e) {
         return false;
     });
 
-    $('#dialog a[href="kcact:rmdir"]').click(function() {
+    $('#dialog a[href="kcact:rmdir"]').click(() => {
         if (!data.removable) return false;
         _.hideDialog();
         _.confirm(
             _.label("Are you sure you want to delete this folder and all its content?"),
-            function(callBack) {
+            callBack => {
                  $.ajax({
                     type: "post",
                     dataType: "json",
                     url: _.baseGetData("deleteDir"),
                     data: {dir: data.path},
                     async: false,
-                    success: function(data) {
+                    success(data) {
                         if (callBack) callBack();
                         if (_.check4errors(data))
                             return;
-                        dir.parent().hide(500, function() {
+                        dir.parent().hide(500, () => {
                             var folders = dir.parent().parent();
                             var pDir = folders.parent().children('a').first();
                             dir.parent().detach();
@@ -312,7 +313,7 @@ _.menuDir = function(dir, e) {
                             _.initDropUpload();
                         });
                     },
-                    error: function() {
+                    error() {
                         if (callBack) callBack();
                         _.alert(_.label("Unknown error."));
                     }
@@ -323,7 +324,7 @@ _.menuDir = function(dir, e) {
     });
 };
 
-_.refreshDir = function(dir) {
+_.refreshDir = dir => {
     var path = dir.data('path');
     if (dir.children('.brace').hasClass('opened') || dir.children('.brace').hasClass('closed'))
         dir.children('.brace').removeClass('opened').addClass('closed');

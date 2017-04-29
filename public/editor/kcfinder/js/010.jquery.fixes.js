@@ -1,4 +1,4 @@
-(function($) {
+(($ => {
 
     $.fn.oldMenu = $.fn.menu;
     $.fn.menu = function(p1, p2, p3) {
@@ -35,11 +35,10 @@
 
                 // Add an icon into select boxes
                 if (t.is('select') && !t.attr('multiple')) {
-
-                    var p = t.parent(),
-                        height = p.height(),
-                        width = p.outerWidth(),
-                        width2 = p.find('span').outerWidth();
+                    var p = t.parent();
+                    var height = p.height();
+                    var width = p.outerWidth();
+                    var width2 = p.find('span').outerWidth();
 
                     $('<div></div>').addClass('ui-icon').css({
                         'float': "right",
@@ -52,4 +51,4 @@
         return ret;
     };
 
-})(jQuery);
+}))(jQuery);
