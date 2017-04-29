@@ -27,7 +27,7 @@ Enjoy!
 */
 /*global jQuery, document, navigator*/
 
-(function (wind, $, undef) {
+(((wind, $, undef) => {
     "use strict";
 
     /**
@@ -42,11 +42,11 @@ Enjoy!
 
         if ($el.prop) {
             // jQuery 1.6+
-            return $el.prop.apply($el, args);
+            return $el.prop(...args);
         }
 
         // jQuery 1.5 and below
-        return $el.attr.apply($el, args);
+        return $el.attr(...args);
     }
 
     /**
@@ -63,7 +63,8 @@ Enjoy!
      * @param Object events Events to bind, properties are event names
      */
     function bindMany($el, options, events) {
-        var name, namespaced;
+        var name;
+        var namespaced;
 
         for (name in events) {
             if (events.hasOwnProperty(name)) {
@@ -82,17 +83,17 @@ Enjoy!
      */
     function bindUi($el, $target, options) {
         bindMany($el, options, {
-            focus: function () {
+            focus() {
                 $target.addClass(options.focusClass);
             },
-            blur: function () {
+            blur() {
                 $target.removeClass(options.focusClass);
                 $target.removeClass(options.activeClass);
             },
-            mouseenter: function () {
+            mouseenter() {
                 $target.addClass(options.hoverClass);
             },
-            mouseleave: function () {
+            mouseleave() {
                 $target.removeClass(options.hoverClass);
                 $target.removeClass(options.activeClass);
             },
@@ -143,10 +144,12 @@ Enjoy!
      * @param Object options Uniform options for this element
      */
     function classUpdateChecked($tag, $el, options) {
-        setTimeout(function() { // sunhater@sunhater.com
+        setTimeout(() => {
+            // sunhater@sunhater.com
 
-            var c = "checked",
-                isChecked = $el.is(":" + c);
+            var c = "checked";
+
+            var isChecked = $el.is(":" + c);
 
             if ($el.prop) {
                 // jQuery 1.6+
@@ -215,7 +218,9 @@ Enjoy!
      * @return Object Contains the div and span as properties
      */
     function divSpan($el, options, divSpanConfig) {
-        var $div, $span, id;
+        var $div;
+        var $span;
+        var id;
 
         if (!divSpanConfig) {
             divSpanConfig = {};
@@ -300,7 +305,10 @@ Enjoy!
      * @return boolean True if in high contrast mode
      */
     function highContrast() {
-        var c, $div, el, rgb;
+        var c;
+        var $div;
+        var el;
+        var rgb;
 
         // High contrast mode deals with white and black
         rgb = 'rgb(120,2,153)';
@@ -442,7 +450,8 @@ Enjoy!
      * @param Function callback Function to run
      */
     function swap($elements, newCss, callback) {
-        var restore, item;
+        var restore;
+        var item;
 
         restore = [];
 
@@ -453,7 +462,7 @@ Enjoy!
                 if (Object.prototype.hasOwnProperty.call(newCss, name)) {
                     restore.push({
                         el: this,
-                        name: name,
+                        name,
                         old: this.style[name]
                     });
 
@@ -502,428 +511,428 @@ Enjoy!
      * @return Function This generated function will perform the given work
      */
     function unwrapUnwrapUnbindFunction($el, options) {
-        return function () {
+        return () => {
             $el.unwrap().unwrap().unbind(options.eventNamespace);
         };
     }
 
-    var allowStyling = true,  // False if IE6 or other unsupported browsers
-        highContrastTest = false,  // Was the high contrast test ran?
-        uniformHandlers = [  // Objects that take care of "unification"
-            {
-                // Buttons
-                match: function ($el) {
-                    return $el.is("a, button, :submit, :reset, input[type='button']");
-                },
-                apply: function ($el, options) {
-                    var $div, defaultSpanHtml, ds, getHtml, doingClickEvent;
-                    defaultSpanHtml = options.submitDefaultHtml;
+    var // False if IE6 or other unsupported browsers
+    allowStyling = true;
 
-                    if ($el.is(":reset")) {
-                        defaultSpanHtml = options.resetDefaultHtml;
-                    }
+    var // Was the high contrast test ran?
+    highContrastTest = false;
 
-                    if ($el.is("a, button")) {
-                        // Use the HTML inside the tag
-                        getHtml = function () {
-                            return $el.html() || defaultSpanHtml;
-                        };
-                    } else {
-                        // Use the value property of the element
-                        getHtml = function () {
-                            return htmlify(attrOrProp($el, "value")) || defaultSpanHtml;
-                        };
-                    }
+    var uniformHandlers = [  // Objects that take care of "unification"
+        {
+            // Buttons
+            match($el) {
+                return $el.is("a, button, :submit, :reset, input[type='button']");
+            },
+            apply($el, options) {
+                var $div, defaultSpanHtml, ds, getHtml, doingClickEvent;
+                defaultSpanHtml = options.submitDefaultHtml;
 
-                    ds = divSpan($el, options, {
-                        divClass: options.buttonClass,
-                        spanHtml: getHtml()
-                    });
-                    $div = ds.div;
-                    bindUi($el, $div, options);
-                    doingClickEvent = false;
-                    bindMany($div, options, {
-                        "click touchend": function () {
-                            var ev, res, target, href;
+                if ($el.is(":reset")) {
+                    defaultSpanHtml = options.resetDefaultHtml;
+                }
 
-                            if (doingClickEvent) {
-                                return;
-                            }
+                if ($el.is("a, button")) {
+                    // Use the HTML inside the tag
+                    getHtml = () => $el.html() || defaultSpanHtml;
+                } else {
+                    // Use the value property of the element
+                    getHtml = () => htmlify(attrOrProp($el, "value")) || defaultSpanHtml;
+                }
 
-                            if ($el.is(':disabled')) {
-                                return;
-                            }
+                ds = divSpan($el, options, {
+                    divClass: options.buttonClass,
+                    spanHtml: getHtml()
+                });
+                $div = ds.div;
+                bindUi($el, $div, options);
+                doingClickEvent = false;
+                bindMany($div, options, {
+                    "click touchend": function () {
+                        var ev, res, target, href;
 
-                            doingClickEvent = true;
+                        if (doingClickEvent) {
+                            return;
+                        }
 
-                            if ($el[0].dispatchEvent) {
-                                ev = document.createEvent("MouseEvents");
-                                ev.initEvent("click", true, true);
-                                res = $el[0].dispatchEvent(ev);
+                        if ($el.is(':disabled')) {
+                            return;
+                        }
 
-                                if ($el.is('a') && res) {
-                                    target = attrOrProp($el, 'target');
-                                    href = attrOrProp($el, 'href');
+                        doingClickEvent = true;
 
-                                    if (!target || target === '_self') {
-                                        document.location.href = href;
-                                    } else {
-                                        wind.open(href, target);
-                                    }
+                        if ($el[0].dispatchEvent) {
+                            ev = document.createEvent("MouseEvents");
+                            ev.initEvent("click", true, true);
+                            res = $el[0].dispatchEvent(ev);
+
+                            if ($el.is('a') && res) {
+                                target = attrOrProp($el, 'target');
+                                href = attrOrProp($el, 'href');
+
+                                if (!target || target === '_self') {
+                                    document.location.href = href;
+                                } else {
+                                    wind.open(href, target);
                                 }
-                            } else {
-                                $el.click();
                             }
-
-                            doingClickEvent = false;
+                        } else {
+                            $el.click();
                         }
-                    });
-                    noSelect($div, options);
-                    return {
-                        remove: function () {
-                            // Move $el out
-                            $div.after($el);
 
-                            // Remove div and span
-                            $div.remove();
-
-                            // Unbind events
-                            $el.unbind(options.eventNamespace);
-                            return $el;
-                        },
-                        update: function () {
-                            classClearStandard($div, options);
-                            classUpdateDisabled($div, $el, options);
-                            $el.detach();
-                            ds.span.html(getHtml()).append($el);
-                        }
-                    };
-                }
-            },
-            {
-                // Checkboxes
-                match: function ($el) {
-                    return $el.is(":checkbox");
-                },
-                apply: function ($el, options) {
-                    var ds, $div, $span;
-                    ds = divSpan($el, options, {
-                        divClass: options.checkboxClass
-                    });
-                    $div = ds.div;
-                    $span = ds.span;
-
-                    // Add focus classes, toggling, active, etc.
-                    bindUi($el, $div, options);
-                    bindMany($el, options, {
-                        "click touchend": function () {
-                            classUpdateChecked($span, $el, options);
-                        }
-                    });
-                    classUpdateChecked($span, $el, options);
-                    return {
-                        remove: unwrapUnwrapUnbindFunction($el, options),
-                        update: function () {
-                            classClearStandard($div, options);
-                            $span.removeClass(options.checkedClass);
-                            classUpdateChecked($span, $el, options);
-                            classUpdateDisabled($div, $el, options);
-                        }
-                    };
-                }
-            },
-            {
-                // File selection / uploads
-                match: function ($el) {
-                    return $el.is(":file");
-                },
-                apply: function ($el, options) {
-                    var ds, $div, $filename, $button;
-
-                    // The "span" is the button
-                    ds = divSpan($el, options, {
-                        divClass: options.fileClass,
-                        spanClass: options.fileButtonClass,
-                        spanHtml: options.fileButtonHtml,
-                        spanWrap: "after"
-                    });
-                    $div = ds.div;
-                    $button = ds.span;
-                    $filename = $("<span />").html(options.fileDefaultHtml);
-                    $filename.addClass(options.filenameClass);
-                    $filename = divSpanWrap($el, $filename, "after");
-
-                    // Set the size
-                    if (!attrOrProp($el, "size")) {
-                        attrOrProp($el, "size", $div.width() / 10);
+                        doingClickEvent = false;
                     }
+                });
+                noSelect($div, options);
+                return {
+                    remove() {
+                        // Move $el out
+                        $div.after($el);
 
-                    // Actions
-                    function filenameUpdate() {
-                        setFilename($el, $filename, options);
+                        // Remove div and span
+                        $div.remove();
+
+                        // Unbind events
+                        $el.unbind(options.eventNamespace);
+                        return $el;
+                    },
+                    update() {
+                        classClearStandard($div, options);
+                        classUpdateDisabled($div, $el, options);
+                        $el.detach();
+                        ds.span.html(getHtml()).append($el);
                     }
-
-                    bindUi($el, $div, options);
-
-                    // Account for input saved across refreshes
-                    filenameUpdate();
-
-                    // IE7 doesn't fire onChange until blur or second fire.
-                    if (isMsie()) {
-                        // IE considers browser chrome blocking I/O, so it
-                        // suspends tiemouts until after the file has
-                        // been selected.
-                        bindMany($el, options, {
-                            click: function () {
-                                $el.trigger("change");
-                                setTimeout(filenameUpdate, 0);
-                            }
-                        });
-                    } else {
-                        // All other browsers behave properly
-                        bindMany($el, options, {
-                            change: filenameUpdate
-                        });
-                    }
-
-                    noSelect($filename, options);
-                    noSelect($button, options);
-                    return {
-                        remove: function () {
-                            // Remove filename and button
-                            $filename.remove();
-                            $button.remove();
-
-                            // Unwrap parent div, remove events
-                            return $el.unwrap().unbind(options.eventNamespace);
-                        },
-                        update: function () {
-                            classClearStandard($div, options);
-                            setFilename($el, $filename, options);
-                            classUpdateDisabled($div, $el, options);
-                        }
-                    };
-                }
-            },
-            {
-                // Input fields (text)
-                match: function ($el) {
-                    if ($el.is("input")) {
-                        var t = (" " + attrOrProp($el, "type") + " ").toLowerCase(),
-                            allowed = " color date datetime datetime-local email month number password search tel text time url week ";
-                        return allowed.indexOf(t) >= 0;
-                    }
-
-                    return false;
-                },
-                apply: function ($el, options) {
-                    var elType, $wrapper;
-
-                    elType = attrOrProp($el, "type");
-                    $el.addClass(options.inputClass);
-                    $wrapper = wrapWithWrapperClass($el, options);
-                    bindUi($el, $el, options);
-
-                    if (options.inputAddTypeAsClass) {
-                        $el.addClass(elType);
-                    }
-
-                    return {
-                        remove: function () {
-                            $el.removeClass(options.inputClass);
-
-                            if (options.inputAddTypeAsClass) {
-                                $el.removeClass(elType);
-                            }
-
-                            if ($wrapper) {
-                                $el.unwrap();
-                            }
-                        },
-                        update: returnFalse
-                    };
-                }
-            },
-            {
-                // Radio buttons
-                match: function ($el) {
-                    return $el.is(":radio");
-                },
-                apply: function ($el, options) {
-                    var ds, $div, $span;
-                    ds = divSpan($el, options, {
-                        divClass: options.radioClass
-                    });
-                    $div = ds.div;
-                    $span = ds.span;
-
-                    // Add classes for focus, handle active, checked
-                    bindUi($el, $div, options);
-                    bindMany($el, options, {
-                        "click touchend": function () {
-                            // Find all radios with the same name, then update
-                            // them with $.uniform.update() so the right
-                            // per-element options are used
-                            $.uniform.update($(':radio[name="' + attrOrProp($el, "name") + '"]'));
-                        }
-                    });
-                    classUpdateChecked($span, $el, options);
-                    return {
-                        remove: unwrapUnwrapUnbindFunction($el, options),
-                        update: function () {
-                            classClearStandard($div, options);
-                            classUpdateChecked($span, $el, options);
-                            classUpdateDisabled($div, $el, options);
-                        }
-                    };
-                }
-            },
-            {
-                // Select lists, but do not style multiselects here
-                match: function ($el) {
-                    if ($el.is("select") && !isMultiselect($el)) {
-                        return true;
-                    }
-
-                    return false;
-                },
-                apply: function ($el, options) {
-                    var ds, $div, $span, origElemWidth;
-
-                    if (options.selectAutoWidth) {
-                        sizingInvisible($el, function () {
-                            origElemWidth = $el.width();
-                        });
-                    }
-
-                    ds = divSpan($el, options, {
-                        divClass: options.selectClass,
-                        spanHtml: ($el.find(":selected:first") || $el.find("option:first")).html(),
-                        spanWrap: "before"
-                    });
-                    $div = ds.div;
-                    $span = ds.span;
-
-                    if (options.selectAutoWidth) {
-                        // Use the width of the select and adjust the
-                        // span and div accordingly
-                        sizingInvisible($el, function () {
-                            // Force "display: block" - related to bug #287
-                            swap($([ $span[0], $div[0] ]), {
-                                display: "block"
-                            }, function () {
-                                var spanPad;
-                                spanPad = $span.outerWidth() - $span.width();
-                                $div.width(origElemWidth + spanPad);
-                                $span.width(origElemWidth);
-                            });
-                        });
-                    } else {
-                        // Force the select to fill the size of the div
-                        $div.addClass('fixedWidth');
-                    }
-
-                    // Take care of events
-                    bindUi($el, $div, options);
-                    bindMany($el, options, {
-                        change: function () {
-                            $span.html($el.find(":selected").html());
-                            $div.removeClass(options.activeClass);
-                        },
-                        "click touchend": function () {
-                            // IE7 and IE8 may not update the value right
-                            // until after click event - issue #238
-                            var selHtml = $el.find(":selected").html();
-
-                            if ($span.html() !== selHtml) {
-                                // Change was detected
-                                // Fire the change event on the select tag
-                                $el.trigger('change');
-                            }
-                        },
-                        keyup: function () {
-                            $span.html($el.find(":selected").html());
-                        }
-                    });
-                    noSelect($span, options);
-                    return {
-                        remove: function () {
-                            // Remove sibling span
-                            $span.remove();
-
-                            // Unwrap parent div
-                            $el.unwrap().unbind(options.eventNamespace);
-                            return $el;
-                        },
-                        update: function () {
-                            if (options.selectAutoWidth) {
-                                // Easier to remove and reapply formatting
-                                $.uniform.restore($el);
-                                $el.uniform(options);
-                            } else {
-                                classClearStandard($div, options);
-
-                                // Reset current selected text
-                                $span.html($el.find(":selected").html());
-                                classUpdateDisabled($div, $el, options);
-                            }
-                        }
-                    };
-                }
-            },
-            {
-                // Select lists - multiselect lists only
-                match: function ($el) {
-                    if ($el.is("select") && isMultiselect($el)) {
-                        return true;
-                    }
-
-                    return false;
-                },
-                apply: function ($el, options) {
-                    var $wrapper;
-
-                    $el.addClass(options.selectMultiClass);
-                    $wrapper = wrapWithWrapperClass($el, options);
-                    bindUi($el, $el, options);
-
-                    return {
-                        remove: function () {
-                            $el.removeClass(options.selectMultiClass);
-
-                            if ($wrapper) {
-                                $el.unwrap();
-                            }
-                        },
-                        update: returnFalse
-                    };
-                }
-            },
-            {
-                // Textareas
-                match: function ($el) {
-                    return $el.is("textarea");
-                },
-                apply: function ($el, options) {
-                    var $wrapper;
-
-                    $el.addClass(options.textareaClass);
-                    $wrapper = wrapWithWrapperClass($el, options);
-                    bindUi($el, $el, options);
-
-                    return {
-                        remove: function () {
-                            $el.removeClass(options.textareaClass);
-
-                            if ($wrapper) {
-                                $el.unwrap();
-                            }
-                        },
-                        update: returnFalse
-                    };
-                }
+                };
             }
-        ];
+        },
+        {
+            // Checkboxes
+            match($el) {
+                return $el.is(":checkbox");
+            },
+            apply($el, options) {
+                var ds, $div, $span;
+                ds = divSpan($el, options, {
+                    divClass: options.checkboxClass
+                });
+                $div = ds.div;
+                $span = ds.span;
+
+                // Add focus classes, toggling, active, etc.
+                bindUi($el, $div, options);
+                bindMany($el, options, {
+                    "click touchend": function () {
+                        classUpdateChecked($span, $el, options);
+                    }
+                });
+                classUpdateChecked($span, $el, options);
+                return {
+                    remove: unwrapUnwrapUnbindFunction($el, options),
+                    update() {
+                        classClearStandard($div, options);
+                        $span.removeClass(options.checkedClass);
+                        classUpdateChecked($span, $el, options);
+                        classUpdateDisabled($div, $el, options);
+                    }
+                };
+            }
+        },
+        {
+            // File selection / uploads
+            match($el) {
+                return $el.is(":file");
+            },
+            apply($el, options) {
+                var ds, $div, $filename, $button;
+
+                // The "span" is the button
+                ds = divSpan($el, options, {
+                    divClass: options.fileClass,
+                    spanClass: options.fileButtonClass,
+                    spanHtml: options.fileButtonHtml,
+                    spanWrap: "after"
+                });
+                $div = ds.div;
+                $button = ds.span;
+                $filename = $("<span />").html(options.fileDefaultHtml);
+                $filename.addClass(options.filenameClass);
+                $filename = divSpanWrap($el, $filename, "after");
+
+                // Set the size
+                if (!attrOrProp($el, "size")) {
+                    attrOrProp($el, "size", $div.width() / 10);
+                }
+
+                // Actions
+                function filenameUpdate() {
+                    setFilename($el, $filename, options);
+                }
+
+                bindUi($el, $div, options);
+
+                // Account for input saved across refreshes
+                filenameUpdate();
+
+                // IE7 doesn't fire onChange until blur or second fire.
+                if (isMsie()) {
+                    // IE considers browser chrome blocking I/O, so it
+                    // suspends tiemouts until after the file has
+                    // been selected.
+                    bindMany($el, options, {
+                        click() {
+                            $el.trigger("change");
+                            setTimeout(filenameUpdate, 0);
+                        }
+                    });
+                } else {
+                    // All other browsers behave properly
+                    bindMany($el, options, {
+                        change: filenameUpdate
+                    });
+                }
+
+                noSelect($filename, options);
+                noSelect($button, options);
+                return {
+                    remove() {
+                        // Remove filename and button
+                        $filename.remove();
+                        $button.remove();
+
+                        // Unwrap parent div, remove events
+                        return $el.unwrap().unbind(options.eventNamespace);
+                    },
+                    update() {
+                        classClearStandard($div, options);
+                        setFilename($el, $filename, options);
+                        classUpdateDisabled($div, $el, options);
+                    }
+                };
+            }
+        },
+        {
+            // Input fields (text)
+            match($el) {
+                if ($el.is("input")) {
+                    var t = (" " + attrOrProp($el, "type") + " ").toLowerCase(),
+                        allowed = " color date datetime datetime-local email month number password search tel text time url week ";
+                    return allowed.indexOf(t) >= 0;
+                }
+
+                return false;
+            },
+            apply($el, options) {
+                var elType, $wrapper;
+
+                elType = attrOrProp($el, "type");
+                $el.addClass(options.inputClass);
+                $wrapper = wrapWithWrapperClass($el, options);
+                bindUi($el, $el, options);
+
+                if (options.inputAddTypeAsClass) {
+                    $el.addClass(elType);
+                }
+
+                return {
+                    remove() {
+                        $el.removeClass(options.inputClass);
+
+                        if (options.inputAddTypeAsClass) {
+                            $el.removeClass(elType);
+                        }
+
+                        if ($wrapper) {
+                            $el.unwrap();
+                        }
+                    },
+                    update: returnFalse
+                };
+            }
+        },
+        {
+            // Radio buttons
+            match($el) {
+                return $el.is(":radio");
+            },
+            apply($el, options) {
+                var ds, $div, $span;
+                ds = divSpan($el, options, {
+                    divClass: options.radioClass
+                });
+                $div = ds.div;
+                $span = ds.span;
+
+                // Add classes for focus, handle active, checked
+                bindUi($el, $div, options);
+                bindMany($el, options, {
+                    "click touchend": function () {
+                        // Find all radios with the same name, then update
+                        // them with $.uniform.update() so the right
+                        // per-element options are used
+                        $.uniform.update($(':radio[name="' + attrOrProp($el, "name") + '"]'));
+                    }
+                });
+                classUpdateChecked($span, $el, options);
+                return {
+                    remove: unwrapUnwrapUnbindFunction($el, options),
+                    update() {
+                        classClearStandard($div, options);
+                        classUpdateChecked($span, $el, options);
+                        classUpdateDisabled($div, $el, options);
+                    }
+                };
+            }
+        },
+        {
+            // Select lists, but do not style multiselects here
+            match($el) {
+                if ($el.is("select") && !isMultiselect($el)) {
+                    return true;
+                }
+
+                return false;
+            },
+            apply($el, options) {
+                var ds, $div, $span, origElemWidth;
+
+                if (options.selectAutoWidth) {
+                    sizingInvisible($el, () => {
+                        origElemWidth = $el.width();
+                    });
+                }
+
+                ds = divSpan($el, options, {
+                    divClass: options.selectClass,
+                    spanHtml: ($el.find(":selected:first") || $el.find("option:first")).html(),
+                    spanWrap: "before"
+                });
+                $div = ds.div;
+                $span = ds.span;
+
+                if (options.selectAutoWidth) {
+                    // Use the width of the select and adjust the
+                    // span and div accordingly
+                    sizingInvisible($el, () => {
+                        // Force "display: block" - related to bug #287
+                        swap($([ $span[0], $div[0] ]), {
+                            display: "block"
+                        }, () => {
+                            var spanPad;
+                            spanPad = $span.outerWidth() - $span.width();
+                            $div.width(origElemWidth + spanPad);
+                            $span.width(origElemWidth);
+                        });
+                    });
+                } else {
+                    // Force the select to fill the size of the div
+                    $div.addClass('fixedWidth');
+                }
+
+                // Take care of events
+                bindUi($el, $div, options);
+                bindMany($el, options, {
+                    change() {
+                        $span.html($el.find(":selected").html());
+                        $div.removeClass(options.activeClass);
+                    },
+                    "click touchend": function () {
+                        // IE7 and IE8 may not update the value right
+                        // until after click event - issue #238
+                        var selHtml = $el.find(":selected").html();
+
+                        if ($span.html() !== selHtml) {
+                            // Change was detected
+                            // Fire the change event on the select tag
+                            $el.trigger('change');
+                        }
+                    },
+                    keyup() {
+                        $span.html($el.find(":selected").html());
+                    }
+                });
+                noSelect($span, options);
+                return {
+                    remove() {
+                        // Remove sibling span
+                        $span.remove();
+
+                        // Unwrap parent div
+                        $el.unwrap().unbind(options.eventNamespace);
+                        return $el;
+                    },
+                    update() {
+                        if (options.selectAutoWidth) {
+                            // Easier to remove and reapply formatting
+                            $.uniform.restore($el);
+                            $el.uniform(options);
+                        } else {
+                            classClearStandard($div, options);
+
+                            // Reset current selected text
+                            $span.html($el.find(":selected").html());
+                            classUpdateDisabled($div, $el, options);
+                        }
+                    }
+                };
+            }
+        },
+        {
+            // Select lists - multiselect lists only
+            match($el) {
+                if ($el.is("select") && isMultiselect($el)) {
+                    return true;
+                }
+
+                return false;
+            },
+            apply($el, options) {
+                var $wrapper;
+
+                $el.addClass(options.selectMultiClass);
+                $wrapper = wrapWithWrapperClass($el, options);
+                bindUi($el, $el, options);
+
+                return {
+                    remove() {
+                        $el.removeClass(options.selectMultiClass);
+
+                        if ($wrapper) {
+                            $el.unwrap();
+                        }
+                    },
+                    update: returnFalse
+                };
+            }
+        },
+        {
+            // Textareas
+            match($el) {
+                return $el.is("textarea");
+            },
+            apply($el, options) {
+                var $wrapper;
+
+                $el.addClass(options.textareaClass);
+                $wrapper = wrapWithWrapperClass($el, options);
+                bindUi($el, $el, options);
+
+                return {
+                    remove() {
+                        $el.removeClass(options.textareaClass);
+
+                        if ($wrapper) {
+                            $el.unwrap();
+                        }
+                    },
+                    update: returnFalse
+                };
+            }
+        }
+    ];
 
     // IE6 can't be styled - can't set opacity on select
     if (isMsie() && !isMsieSevenOrNewer()) {
@@ -988,15 +997,18 @@ Enjoy!
 
         // Code for specifying a reset button
         if (options.resetSelector) {
-            $(options.resetSelector).mouseup(function () {
-                wind.setTimeout(function () {
+            $(options.resetSelector).mouseup(() => {
+                wind.setTimeout(() => {
                     $.uniform.update(el);
                 }, 10);
             });
         }
 
         return this.each(function () {
-            var $el = $(this), i, handler, callbacks;
+            var $el = $(this);
+            var i;
+            var handler;
+            var callbacks;
 
             // Avoid uniforming elements already uniformed - just update
             if ($el.data("uniformed")) {
@@ -1022,13 +1034,15 @@ Enjoy!
         });
     };
 
-    $.uniform.restore = $.fn.uniform.restore = function (elem) {
+    $.uniform.restore = $.fn.uniform.restore = elem => {
         if (elem === undef) {
             elem = $.uniform.elements;
         }
 
         $(elem).each(function () {
-            var $el = $(this), index, elementData;
+            var $el = $(this);
+            var index;
+            var elementData;
             elementData = $el.data("uniformed");
 
             // Skip elements that are not uniformed
@@ -1050,13 +1064,14 @@ Enjoy!
         });
     };
 
-    $.uniform.update = $.fn.uniform.update = function (elem) {
+    $.uniform.update = $.fn.uniform.update = elem => {
         if (elem === undef) {
             elem = $.uniform.elements;
         }
 
         $(elem).each(function () {
-            var $el = $(this), elementData;
+            var $el = $(this);
+            var elementData;
             elementData = $el.data("uniformed");
 
             // Skip elements that are not uniformed
@@ -1067,4 +1082,4 @@ Enjoy!
             elementData.update($el, elementData.options);
         });
     };
-}(this, jQuery));
+})(this, jQuery));

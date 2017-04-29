@@ -10,34 +10,34 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-(function($) {
+(($ => {
     $.agent = {};
 
-    var agent = " " + navigator.userAgent,
+    var agent = " " + navigator.userAgent;
 
-        patterns = [
-            {
-                expr: / [a-z]+\/[0-9a-z\.]+/ig,
-                delim: "/"
-            }, {
-                expr: / [a-z]+\s+[0-9a-z\.]+/ig,
-                delim: /\s+/,
-                keys: ["opera", "msie", "firefox", "android"]
-            }, {
-                expr: /[ \/\(]([a-z0-9_]+)[ \;\)\/]/ig,
-                keys: "i386|i486|i586|i686|x86|x64|x86_64|intel|ppc|powerpc|windows|macintosh|darwin|unix|linux|sunos|android|iphone|ipad|ipod|amiga|amigaos|beos|wii|playstation|gentoo|fedora|slackware|ubuntu|archlinux|debian|mint|mageia|mandriva|freebsd|openbsd|netbsd|solaris|opensolaris|x11|mobile".split('|'),
-                sub: "platform"
-            }
-        ];
+    var patterns = [
+        {
+            expr: / [a-z]+\/[0-9a-z\.]+/ig,
+            delim: "/"
+        }, {
+            expr: / [a-z]+\s+[0-9a-z\.]+/ig,
+            delim: /\s+/,
+            keys: ["opera", "msie", "firefox", "android"]
+        }, {
+            expr: /[ \/\(]([a-z0-9_]+)[ \;\)\/]/ig,
+            keys: "i386|i486|i586|i686|x86|x64|x86_64|intel|ppc|powerpc|windows|macintosh|darwin|unix|linux|sunos|android|iphone|ipad|ipod|amiga|amigaos|beos|wii|playstation|gentoo|fedora|slackware|ubuntu|archlinux|debian|mint|mageia|mandriva|freebsd|openbsd|netbsd|solaris|opensolaris|x11|mobile".split('|'),
+            sub: "platform"
+        }
+    ];
 
-    $.each(patterns, function(i, pattern) {
+    $.each(patterns, (i, pattern) => {
         var elements = agent.match(pattern.expr);
         if (elements === null)
             return;
-        $.each(elements, function(j, ag) {
+        $.each(elements, (j, ag) => {
             ag = ag.replace(/^\s+/, "").toLowerCase();
-            var key = ag.replace(pattern.expr, "$1"),
-                val = true;
+            var key = ag.replace(pattern.expr, "$1");
+            var val = true;
             if (typeof pattern.delim != "undefined") {
                 ag = ag.split(pattern.delim);
                 key = ag[0];
@@ -65,4 +65,4 @@
                 $.agent[key] = val;
         });
     });
-})(jQuery);
+}))(jQuery);

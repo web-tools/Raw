@@ -1,5 +1,5 @@
 var raw_confirm='';
-$( document ).ready( function() {
+$( document ).ready( () => {
 
 	$( 'textarea.editor' ).ckeditor();
 
@@ -26,8 +26,7 @@ $( document ).ready( function() {
 		  url: form.attr('action'),
 		  data: args,
 		  dataType:'json'
-		}).done(function( json ) 
-		{		
+		}).done(json => {		
 			form.find('div.alert').remove();	
 			$('.raw-error').html('');	
 			if (json['status'] && json['status'] == 1)
@@ -69,8 +68,7 @@ $( document ).ready( function() {
 				url: item.attr('href'),
 				data: {},
 				dataType:'json'
-			}).done(function( json )
-			{
+			}).done(json => {
 				list.parent().find('div.alert').remove();
 				$('.raw-error').html('');
 
@@ -127,7 +125,7 @@ $( document ).ready( function() {
 	/* Upload */
 	if ($('.raw-upload').length > 0)
 	{
-		$('.raw-uploaded').on('click','a.btn.delete',function(e){
+		$('.raw-uploaded').on('click','a.btn.delete',e => {
 			e.preventDefault();
 			if (confirm(raw_confirm))
 			{
@@ -152,17 +150,16 @@ $( document ).ready( function() {
 		    progress_cont.hide();
 
 		    $('#field-'+field_id).fileupload({
-		        url: url,
+		        url,
 		        dataType: 'json',
 		        formData: {
 		        	'field':field_id
 		        },
-		        start: function(e,data)
-		        {
+		        start(e, data) {
 		        	$("#error_"+field_id).html('');
 		        	progress_cont.show();
 		        },
-		        done: function (e, data) {
+		        done(e, data) {
 		        	progress_cont.hide();
 		        	
 		        	if (data.result.status == 1)
@@ -186,7 +183,7 @@ $( document ).ready( function() {
 		        		$("#error_"+field_id).html('<div class="alert alert-danger">'+data.result.message+'</div>');
 		        	}
 		        },
-		        progressall: function (e, data) {
+		        progressall(e, data) {
 		            var progress = parseInt(data.loaded / data.total * 100, 10);
 		            progress_cont.find('.progress-bar').css(
 		                'width',

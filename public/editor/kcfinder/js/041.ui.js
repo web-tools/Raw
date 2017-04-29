@@ -10,16 +10,16 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-_.alert = function(text, field) {
+_.alert = (text, field) => {
     var close = !field
-        ? function() {}
+        ? () => {}
         : ($.isFunction(field)
             ? field
-            : function() { setTimeout(function() {field.focus(); }, 1); }
+            : () => { setTimeout(() => {field.focus(); }, 1); }
         );
 
     return _.dialog(_.label("Warning"), text.replace("\n", "<br />\n"), {
-        close: function() {
+        close() {
             close();
             if ($(this).hasClass('ui-dialog-content'))
                 $(this).dialog('destroy').detach();
@@ -27,20 +27,20 @@ _.alert = function(text, field) {
     });
 };
 
-_.confirm = function(text, callback, options) {
+_.confirm = (text, callback, options) => {
 
     var o = {
         buttons: [
             {
                 text: _.label("Yes"),
-                click: function() {
+                click() {
                     callback();
                     $(this).dialog('destroy').detach();
                 }
             },
             {
                 text: _.label("No"),
-                click: function() {
+                click() {
                     $(this).dialog('destroy').detach();
                 }
             }
@@ -48,7 +48,7 @@ _.confirm = function(text, callback, options) {
     };
 
     if (options)
-        $.each(o, function(key, val) {
+        $.each(o, (key, val) => {
             if (typeof options[key] == "undefined")
                 options[key] = val;
         });
@@ -58,7 +58,7 @@ _.confirm = function(text, callback, options) {
     return _.dialog(_.label("Question"), text, options);
 };
 
-_.dialog = function(title, content, options) {
+_.dialog = (title, content, options) => {
 
     if (!options) options = {};
     var dlg = $('<div></div>');
@@ -75,7 +75,7 @@ _.dialog = function(title, content, options) {
         buttons: [
             {
                 text: _.label("OK"),
-                click: function() {
+                click() {
                     if (typeof options.close != "undefined")
                         options.close();
                     if ($(this).hasClass('ui-dialog-content'))
@@ -83,7 +83,7 @@ _.dialog = function(title, content, options) {
                 }
             }
         ],
-        close: function() {
+        close() {
             if ($(this).hasClass('ui-dialog-content'))
                 $(this).dialog('destroy').detach();
         },
@@ -95,7 +95,7 @@ _.dialog = function(title, content, options) {
 
     var padding = options.nopadding ? false : true;
 
-    $.each(defaultOptions, function(key, val) {
+    $.each(defaultOptions, (key, val) => {
         if (typeof options[key] == "undefined") options[key] = val;
     });
 

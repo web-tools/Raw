@@ -10,11 +10,9 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-_.initFiles = function() {
-    $(document).unbind('keydown').keydown(function(e) {
-        return !_.selectAll(e);
-    });
-    $('#files').unbind().scroll(function() {
+_.initFiles = () => {
+    $(document).unbind('keydown').keydown(e => !_.selectAll(e));
+    $('#files').unbind().scroll(() => {
         _.hideDialog();
     });
 
@@ -22,7 +20,7 @@ _.initFiles = function() {
         $.$.unselect();
         _.selectFile($(this), e);
 
-    }).rightClick(function(el, e) {
+    }).rightClick((el, e) => {
         $.$.unselect();
         _.menuFile($(el), e);
 
@@ -30,14 +28,14 @@ _.initFiles = function() {
         $.$.unselect();
         _.returnFile($(this));
 
-    }).mouseup(function() {
+    }).mouseup(() => {
         $.$.unselect();
 
-    }).mouseout(function() {
+    }).mouseout(() => {
         $.$.unselect();
     });
 
-    $.each(_.shows, function(i, val) {
+    $.each(_.shows, (i, val) => {
         var display = ($.$.kuki.get('show' + val) == "off")
             ? "none" : "block";
         $('#files .file div.' + val).css('display', display);
@@ -45,13 +43,14 @@ _.initFiles = function() {
     _.statusDir();
 };
 
-_.showFiles = function(callBack, selected) {
+_.showFiles = (callBack, selected) => {
     _.fadeFiles();
-    setTimeout(function() {
+    setTimeout(() => {
         var html = '';
-        $.each(_.files, function(i, file) {
-            var icon, stamp = [];
-            $.each(file, function(key, val) {
+        $.each(_.files, (i, file) => {
+            var icon;
+            var stamp = [];
+            $.each(file, (key, val) => {
                 stamp[stamp.length] = key + "|" + val;
             });
             stamp = encodeURIComponent(stamp.join("|"));
@@ -80,7 +79,7 @@ _.showFiles = function(callBack, selected) {
             }
         });
         $('#files').html('<div>' + html + '<div>');
-        $.each(_.files, function(i, file) {
+        $.each(_.files, (i, file) => {
             var item = $('#files .file').get(i);
             $(item).data(file);
             if ($.$.inArray(file.name, selected) ||
@@ -94,18 +93,19 @@ _.showFiles = function(callBack, selected) {
     }, 200);
 };
 
-_.selectFile = function(file, e) {
+_.selectFile = (file, e) => {
     if (e.ctrlKey || e.metaKey) {
         if (file.hasClass('selected'))
             file.removeClass('selected');
         else
             file.addClass('selected');
-        var files = $('.file.selected').get(),
-            size = 0, data;
+        var files = $('.file.selected').get();
+        var size = 0;
+        var data;
         if (!files.length)
             _.statusDir();
         else {
-            $.each(files, function(i, cfile) {
+            $.each(files, (i, cfile) => {
                 size += parseInt($(cfile).data('size'));
             });
             size = _.humanSize(size);
@@ -124,13 +124,13 @@ _.selectFile = function(file, e) {
     }
 };
 
-_.selectAll = function(e) {
+_.selectAll = e => {
     if ((!e.ctrlKey && !e.metaKey) || ((e.keyCode != 65) && (e.keyCode != 97)))
         return false;
     var files = $('.file').get();
     if (files.length) {
         var size = 0;
-        $.each(files, function(i, file) {
+        $.each(files, (i, file) => {
             if (!$(file).hasClass('selected'))
                 $(file).addClass('selected');
             size += parseInt($(file).data('size'));
@@ -141,10 +141,13 @@ _.selectAll = function(e) {
     return true;
 };
 
-_.returnFile = function(file) {
+_.returnFile = file => {
+    var button;
+    var win;
 
-    var button, win, fileURL = file.substr
+    var fileURL = file.substr
         ? file : _.uploadURL + "/" + _.dir + "/" + file.data('name');
+
     fileURL = $.$.escapeDirs(fileURL);
 
     if (_.opener.name == "ckeditor") {
@@ -202,10 +205,10 @@ _.returnFile = function(file) {
     }
 };
 
-_.returnFiles = function(files) {
+_.returnFiles = files => {
     if (_.opener.callBackMultiple && files.length) {
         var rfiles = [];
-        $.each(files, function(i, file) {
+        $.each(files, (i, file) => {
             rfiles[i] = _.uploadURL + "/" + _.dir + "/" + $(file).data('name');
             rfiles[i] = $.$.escapeDirs(rfiles[i]);
         });
@@ -214,10 +217,11 @@ _.returnFiles = function(files) {
     }
 };
 
-_.returnThumbnails = function(files) {
+_.returnThumbnails = files => {
     if (_.opener.callBackMultiple) {
-        var rfiles = [], j = 0;
-        $.each(files, function(i, file) {
+        var rfiles = [];
+        var j = 0;
+        $.each(files, (i, file) => {
             if ($(file).data('thumb')) {
                 rfiles[j] = _.thumbsURL + "/" + _.dir + "/" + $(file).data('name');
                 rfiles[j] = $.$.escapeDirs(rfiles[j++]);
@@ -228,16 +232,16 @@ _.returnThumbnails = function(files) {
     }
 };
 
-_.menuFile = function(file, e) {
-    var data = file.data(),
-        files = $('.file.selected').get(),
-        html = '';
+_.menuFile = (file, e) => {
+    var data = file.data();
+    var files = $('.file.selected').get();
+    var html = '';
 
     if (file.hasClass('selected') && files.length && (files.length > 1)) {
-        var thumb = false,
-            notWritable = 0,
-            cdata;
-        $.each(files, function(i, cfile) {
+        var thumb = false;
+        var notWritable = 0;
+        var cdata;
+        $.each(files, (i, cfile) => {
             cdata = $(cfile).data();
             if (cdata.thumb) thumb = true;
             if (!data.writable) notWritable++;
@@ -270,34 +274,34 @@ _.menuFile = function(file, e) {
         } else
             return;
 
-        $('#dialog a[href="kcact:pick"]').click(function() {
+        $('#dialog a[href="kcact:pick"]').click(() => {
             _.returnFiles(files);
             _.hideDialog();
             return false;
         });
 
-        $('#dialog a[href="kcact:pick_thumb"]').click(function() {
+        $('#dialog a[href="kcact:pick_thumb"]').click(() => {
             _.returnThumbnails(files);
             _.hideDialog();
             return false;
         });
 
-        $('#dialog a[href="kcact:download"]').click(function() {
+        $('#dialog a[href="kcact:download"]').click(() => {
             _.hideDialog();
             var pfiles = [];
-            $.each(files, function(i, cfile) {
+            $.each(files, (i, cfile) => {
                 pfiles[i] = $(cfile).data('name');
             });
             _.post(_.baseGetData('downloadSelected'), {dir:_.dir, files:pfiles});
             return false;
         });
 
-        $('#dialog a[href="kcact:clpbrdadd"]').click(function() {
+        $('#dialog a[href="kcact:clpbrdadd"]').click(() => {
             _.hideDialog();
             var msg = '';
-            $.each(files, function(i, cfile) {
-                var cdata = $(cfile).data(),
-                    failed = false;
+            $.each(files, (i, cfile) => {
+                var cdata = $(cfile).data();
+                var failed = false;
                 for (i = 0; i < _.clipboard.length; i++)
                     if ((_.clipboard[i].name == cdata.name) &&
                         (_.clipboard[i].dir == _.dir)
@@ -320,9 +324,9 @@ _.menuFile = function(file, e) {
         $('#dialog a[href="kcact:rm"]').click(function() {
             if ($(this).hasClass('denied')) return false;
             _.hideDialog();
-            var failed = 0,
-                dfiles = [];
-            $.each(files, function(i, cfile) {
+            var failed = 0;
+            var dfiles = [];
+            $.each(files, (i, cfile) => {
                 var cdata = $(cfile).data();
                 if (!cdata.writable)
                     failed++;
@@ -334,7 +338,7 @@ _.menuFile = function(file, e) {
                 return false;
             }
 
-            var go = function(callBack) {
+            var go = callBack => {
                 _.fadeFiles();
                 $.ajax({
                     type: "post",
@@ -342,12 +346,12 @@ _.menuFile = function(file, e) {
                     url: _.baseGetData("rm_cbd"),
                     data: {files:dfiles},
                     async: false,
-                    success: function(data) {
+                    success(data) {
                         if (callBack) callBack();
                         _.check4errors(data);
                         _.refresh();
                     },
-                    error: function() {
+                    error() {
                         if (callBack) callBack();
                         $('#files > div').css({
                             opacity: "",
@@ -372,7 +376,6 @@ _.menuFile = function(file, e) {
 
             return false;
         });
-
     } else {
         html += '<ul>';
         $('.file').removeClass('selected');
@@ -407,20 +410,20 @@ _.menuFile = function(file, e) {
         $('#dialog').html(html).find('ul').menu();
         _.showMenu(e);
 
-        $('#dialog a[href="kcact:pick"]').click(function() {
+        $('#dialog a[href="kcact:pick"]').click(() => {
             _.returnFile(file);
             _.hideDialog();
             return false;
         });
 
-        $('#dialog a[href="kcact:pick_thumb"]').click(function() {
+        $('#dialog a[href="kcact:pick_thumb"]').click(() => {
             var path = _.thumbsURL + "/" + _.dir + "/" + data.name;
             _.returnFile(path);
             _.hideDialog();
             return false;
         });
 
-        $('#dialog a[href="kcact:download"]').click(function() {
+        $('#dialog a[href="kcact:download"]').click(() => {
             var html = '<form id="downloadForm" method="post" action="' + _.baseGetData('download') + '"><input type="hidden" name="dir" /><input type="hidden" name="file" /></form>';
             $('#dialog').html(html);
             $('#downloadForm input').get(0).value = _.dir;
@@ -429,7 +432,7 @@ _.menuFile = function(file, e) {
             return false;
         });
 
-        $('#dialog a[href="kcact:clpbrdadd"]').click(function() {
+        $('#dialog a[href="kcact:clpbrdadd"]').click(() => {
             for (i = 0; i < _.clipboard.length; i++)
                 if ((_.clipboard[i].name == data.name) &&
                     (_.clipboard[i].dir == _.dir)
@@ -446,7 +449,7 @@ _.menuFile = function(file, e) {
             return false;
         });
 
-        $('#dialog a[href="kcact:mv"]').click(function(e) {
+        $('#dialog a[href="kcact:mv"]').click(e => {
             if (!data.writable) return false;
             _.fileNameDialog(
                 e, {dir: _.dir, file: data.name},
@@ -456,32 +459,32 @@ _.menuFile = function(file, e) {
                     errSlash: "Unallowable characters in file name.",
                     errDot: "File name shouldn't begins with '.'"
                 },
-                function() {
+                () => {
                     _.refresh();
                 }
             );
             return false;
         });
 
-        $('#dialog a[href="kcact:rm"]').click(function() {
+        $('#dialog a[href="kcact:rm"]').click(() => {
             if (!data.writable) return false;
             _.hideDialog();
             _.confirm(_.label("Are you sure you want to delete this file?"),
-                function(callBack) {
+                callBack => {
                     $.ajax({
                         type: "post",
                         dataType: "json",
                         url: _.baseGetData("delete"),
                         data: {dir: _.dir, file: data.name},
                         async: false,
-                        success: function(data) {
+                        success(data) {
                             if (callBack) callBack();
                             _.clearClipboard();
                             if (_.check4errors(data))
                                 return;
                             _.refresh();
                         },
-                        error: function() {
+                        error() {
                             if (callBack) callBack();
                             _.alert(_.label("Unknown error."));
                         }
@@ -492,25 +495,23 @@ _.menuFile = function(file, e) {
         });
     }
 
-    $('#dialog a[href="kcact:view"]').click(function() {
+    $('#dialog a[href="kcact:view"]').click(() => {
         _.hideDialog();
         var ts = new Date().getTime();
-        var showImage = function(data) {
-            var url = $.$.escapeDirs(_.uploadURL + "/" + _.dir + "/" + data.name) + "?ts=" + ts,
-                img = new Image();
+        var showImage = data => {
+            var url = $.$.escapeDirs(_.uploadURL + "/" + _.dir + "/" + data.name) + "?ts=" + ts;
+            var img = new Image();
 
             $('#loading').html(_.label("Loading image...")).css('display', "inline");
             img.src = url;
-            img.onerror = function() {
+            img.onerror = () => {
                 _.lock = false;
                 $('#loading').css('display', "none");
                 _.alert(_.label("Unknown error."));
-                $(document).unbind('keydown').keydown(function(e) {
-                    return !_.selectAll(e);
-                });
+                $(document).unbind('keydown').keydown(e => !_.selectAll(e));
                 _.refresh();
             };
-            var onImgLoad = function() {
+            var onImgLoad = () => {
                 _.lock = false;
                 $('#files .file').each(function() {
                     if ($(this).data('name') == data.name)
@@ -521,7 +522,7 @@ _.menuFile = function(file, e) {
                 $('#dialog img').attr({
                     src: url,
                     title: data.name
-                }).fadeIn('fast', function() {
+                }).fadeIn('fast', () => {
                     var o_w = $('#dialog').outerWidth();
                     var o_h = $('#dialog').outerHeight();
                     var f_w = $(window).width() - 30;
@@ -536,26 +537,24 @@ _.menuFile = function(file, e) {
                             height: f_h
                         });
                     }
-                    $('#dialog').unbind('click').click(function(e) {
+                    $('#dialog').unbind('click').click(e => {
                         _.hideDialog();
                         $(document).unbind('keydown');
-                        $(document).keydown(function(e) {
-                            return !_.selectAll(e);
-                        });
+                        $(document).keydown(e => !_.selectAll(e));
                         if (_.ssImage) {
                             _.selectFile($(_.ssImage), e);
                         }
                     });
                     _.showDialog();
                     var images = [];
-                    $.each(_.files, function(i, file) {
+                    $.each(_.files, (i, file) => {
                         if (file.thumb || file.smallThumb)
                             images[images.length] = file;
                     });
                     if (images.length)
-                        $.each(images, function(i, image) {
+                        $.each(images, (i, image) => {
                             if (image.name == data.name) {
-                                $(document).unbind('keydown').keydown(function(e) {
+                                $(document).unbind('keydown').keydown(e => {
                                     if (images.length > 1) {
                                         if (!_.lock && (e.keyCode == 37)) {
                                             var nimg = i
@@ -574,9 +573,7 @@ _.menuFile = function(file, e) {
                                     }
                                     if (e.keyCode == 27) {
                                         _.hideDialog();
-                                        $(document).unbind('keydown').keydown(function(e) {
-                                            return !_.selectAll(e);
-                                        });
+                                        $(document).unbind('keydown').keydown(e => !_.selectAll(e));
                                     }
                                 });
                             }

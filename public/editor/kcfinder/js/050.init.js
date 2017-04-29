@@ -10,18 +10,14 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-_.init = function() {
+_.init = () => {
     if (!_.checkAgent()) return;
 
-    $('body').click(function() {
+    $('body').click(() => {
         _.hideDialog();
     }).rightClick();
-    $('#shadow').click(function() {
-        return false;
-    });
-    $('#dialog').unbind().click(function() {
-        return false;
-    });
+    $('#shadow').click(() => false);
+    $('#dialog').unbind().click(() => false);
     _.initOpeners();
     _.initSettings();
     _.initContent();
@@ -30,7 +26,7 @@ _.init = function() {
     _.initDropUpload();
 };
 
-_.checkAgent = function() {
+_.checkAgent = () => {
     if (($.agent.msie && !$.agent.opera && !$.agent.chromeframe && (parseInt($.agent.msie) < 9)) ||
         ($.agent.opera && (parseInt($.agent.version) < 10)) ||
         ($.agent.firefox && (parseFloat($.agent.firefox) < 1.8))
@@ -45,7 +41,7 @@ _.checkAgent = function() {
     return true;
 };
 
-_.initOpeners = function() {
+_.initOpeners = () => {
 
     try {
 
@@ -103,7 +99,7 @@ _.initOpeners = function() {
     } catch(e) {}
 };
 
-_.initContent = function() {
+_.initContent = () => {
     $('div#folders').html(_.label("Loading folders..."));
     $('div#files').html(_.label("Loading files..."));
     $.ajax({
@@ -111,7 +107,7 @@ _.initContent = function() {
         dataType: "json",
         url: _.baseGetData("init"),
         async: false,
-        success: function(data) {
+        success(data) {
             if (_.check4errors(data))
                 return;
             _.dirWritable = data.dirWritable;
@@ -121,32 +117,32 @@ _.initContent = function() {
             _.files = data.files ? data.files : [];
             _.orderFiles();
         },
-        error: function() {
+        error() {
             $('div#folders').html(_.label("Unknown error."));
             $('div#files').html(_.label("Unknown error."));
         }
     });
 };
 
-_.initResizer = function() {
+_.initResizer = () => {
     var cursor = ($.agent.opera) ? 'move' : 'col-resize';
     $('#resizer').css('cursor', cursor).draggable({
         axis: 'x',
-        start: function() {
+        start() {
             $(this).css({
                 opacity: "0.4",
                 filter: "alpha(opacity=40)"
             });
             $('#all').css('cursor', cursor);
         },
-        drag: function(e) {
+        drag(e) {
             var left = e.pageX - parseInt(parseInt($(this).css('width')) / 2);
             left = (left >= 0) ? left : 0;
             left = (left + parseInt($(this).css('width')) < $(window).width())
                 ? left : $(window).width() - parseInt($(this).css('width'));
             $(this).css('left', left);
         },
-        stop: function() {
+        stop() {
             $(this).css({
                 opacity: "0",
                 filter: "alpha(opacity=0)"
@@ -166,7 +162,7 @@ _.initResizer = function() {
     });
 };
 
-_.resize = function() {
+_.resize = () => {
     $('#left').css({
         width: "25%",
         height: $(window).height() - $('#status').outerHeight()
@@ -198,7 +194,7 @@ _.resize = function() {
     });
 };
 
-_.fixFilesHeight = function() {
+_.fixFilesHeight = () => {
     $('#files').css('height',
         $('#left').outerHeight() - $('#toolbar').outerHeight() - $('#files').outerVSpace() -
         (($('#settings').css('display') != "none") ? $('#settings').outerHeight() : 0)

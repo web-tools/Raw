@@ -10,7 +10,7 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-_.initDropUpload = function() {
+_.initDropUpload = () => {
     if ((typeof(XMLHttpRequest) == "undefined") ||
         (typeof(document.addEventListener) == "undefined") ||
         (typeof(File) == "undefined") ||
@@ -20,41 +20,39 @@ _.initDropUpload = function() {
 
     if (!XMLHttpRequest.prototype.sendAsBinary) {
         XMLHttpRequest.prototype.sendAsBinary = function(datastr) {
-            var ords = Array.prototype.map.call(datastr, function(x) {
-                return x.charCodeAt(0) & 0xff;
-            }),
-                ui8a = new Uint8Array(ords);
+            var ords = Array.prototype.map.call(datastr, x => x.charCodeAt(0) & 0xff);
+            var ui8a = new Uint8Array(ords);
             this.send(ui8a.buffer);
         }
     }
 
-    var uploadQueue = [],
-        uploadInProgress = false,
-        filesCount = 0,
-        errors = [],
-        files = $('#files'),
-        folders = $('div.folder > a'),
-        boundary = "------multipartdropuploadboundary" + (new Date).getTime(),
-        currentFile,
+    var uploadQueue = [];
+    var uploadInProgress = false;
+    var filesCount = 0;
+    var errors = [];
+    var files = $('#files');
+    var folders = $('div.folder > a');
+    var boundary = "------multipartdropuploadboundary" + (new Date).getTime();
+    var currentFile;
 
-    filesDragOver = function(e) {
+    var filesDragOver = e => {
         if (e.preventDefault) e.preventDefault();
         $('#files').addClass('drag');
         return false;
-    },
+    };
 
-    filesDragEnter = function(e) {
+    var filesDragEnter = e => {
         if (e.preventDefault) e.preventDefault();
         return false;
-    },
+    };
 
-    filesDragLeave = function(e) {
+    var filesDragLeave = e => {
         if (e.preventDefault) e.preventDefault();
         $('#files').removeClass('drag');
         return false;
-    },
+    };
 
-    filesDrop = function(e) {
+    var filesDrop = e => {
         if (e.preventDefault) e.preventDefault();
         if (e.stopPropagation) e.stopPropagation();
         $('#files').removeClass('drag');
@@ -70,14 +68,14 @@ _.initDropUpload = function() {
         }
         processUploadQueue();
         return false;
-    },
+    };
 
-    folderDrag = function(e) {
+    var folderDrag = e => {
         if (e.preventDefault) e.preventDefault();
         return false;
-    },
+    };
 
-    folderDrop = function(e, dir) {
+    var folderDrop = (e, dir) => {
         if (e.preventDefault) e.preventDefault();
         if (e.stopPropagation) e.stopPropagation();
         if (!$(dir).data('writable')) {
@@ -105,19 +103,19 @@ _.initDropUpload = function() {
     files.get(0).addEventListener('drop', filesDrop, false);
 
     folders.each(function() {
-        var folder = this,
+        var folder = this;
 
-        dragOver = function(e) {
+        var dragOver = e => {
             $(folder).children('span.folder').addClass('context');
             return folderDrag(e);
-        },
+        };
 
-        dragLeave = function(e) {
+        var dragLeave = e => {
             $(folder).children('span.folder').removeClass('context');
             return folderDrag(e);
-        },
+        };
 
-        drop = function(e) {
+        var drop = e => {
             $(folder).children('span.folder').removeClass('context');
             return folderDrop(e, folder);
         };
@@ -140,7 +138,7 @@ _.initDropUpload = function() {
         $('#loading').html(_.label("Uploading file {number} of {count}... {progress}", {
             number: filesCount - uploadQueue.length,
             count: filesCount,
-            progress: progress
+            progress
         }));
     }
 
@@ -164,7 +162,7 @@ _.initDropUpload = function() {
             reader.thisFileSize = file.size;
             reader.thisTargetDir = file.thisTargetDir;
 
-            reader.onload = function(evt) {
+            reader.onload = evt => {
                 uploadInProgress = true;
 
                 var postbody = '--' + boundary + '\r\nContent-Disposition: form-data; name="upload[]"';
@@ -186,7 +184,7 @@ _.initDropUpload = function() {
                 xhr.setRequestHeader('Content-Type', "multipart/form-data; boundary=" + boundary);
                 xhr.setRequestHeader('Content-Length', postbody.length);
 
-                xhr.onload = function(e) {
+                xhr.onload = e => {
                     $('#loading').css('display', "none");
                     if (_.dir == reader.thisTargetDir)
                         _.fadeFiles();
@@ -199,7 +197,7 @@ _.initDropUpload = function() {
                 xhr.sendAsBinary(postbody);
             };
 
-            reader.onerror = function(evt) {
+            reader.onerror = evt => {
                 $('#loading').css('display', "none");
                 uploadInProgress = false;
                 processUploadQueue();
@@ -212,7 +210,7 @@ _.initDropUpload = function() {
 
         } else {
             filesCount = 0;
-            var loop = setInterval(function() {
+            var loop = setInterval(() => {
                 if (uploadInProgress) return;
                 boundary = "------multipartdropuploadboundary" + (new Date).getTime();
                 uploadQueue = [];

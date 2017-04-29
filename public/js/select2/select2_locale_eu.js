@@ -3,14 +3,14 @@
  *
  * Author: Julen Ruiz Aizpuru <julenx at gmail dot com>
  */
-(function ($) {
+(($ => {
     "use strict";
 
     $.extend($.fn.select2.defaults, {
-        formatNoMatches: function () {
+        formatNoMatches() {
           return "Ez da bat datorrenik aurkitu";
         },
-        formatInputTooShort: function (input, min) {
+        formatInputTooShort(input, min) {
           var n = min - input.length;
           if (n === 1) {
             return "Idatzi karaktere bat gehiago";
@@ -18,7 +18,7 @@
             return "Idatzi " + n + " karaktere gehiago";
           }
         },
-        formatInputTooLong: function (input, max) {
+        formatInputTooLong(input, max) {
           var n = input.length - max;
           if (n === 1) {
             return "Idatzi karaktere bat gutxiago";
@@ -26,18 +26,18 @@
             return "Idatzi " + n + " karaktere gutxiago";
           }
         },
-        formatSelectionTooBig: function (limit) {
+        formatSelectionTooBig(limit) {
           if (limit === 1 ) {
             return "Elementu bakarra hauta dezakezu";
           } else {
             return limit + " elementu hauta ditzakezu soilik";
           }
         },
-        formatLoadMore: function (pageNumber) {
+        formatLoadMore(pageNumber) {
           return "Emaitza gehiago kargatzen…";
         },
-        formatSearching: function () {
+        formatSearching() {
           return "Bilatzen…";
         }
     });
-})(jQuery);
+}))(jQuery);

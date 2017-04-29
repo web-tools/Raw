@@ -4,7 +4,7 @@
  * Author: Michal Marek <ahoj@michal-marek.cz>
  * Author - sklonovani: David Vallner <david@vallner.net>
  */
-(function ($) {
+(($ => {
     "use strict";
     // use text for the numbers 2 through 4
     var smallNumbers = {
@@ -13,8 +13,8 @@
         4: function() { return "čtyři"; }
     }
     $.extend($.fn.select2.defaults, {
-        formatNoMatches: function () { return "Nenalezeny žádné položky"; },
-        formatInputTooShort: function (input, min) {
+        formatNoMatches() { return "Nenalezeny žádné položky"; },
+        formatInputTooShort(input, min) {
             var n = min - input.length;
             if (n == 1) {
                 return "Prosím zadejte ještě jeden znak";
@@ -24,7 +24,7 @@
                 return "Prosím zadejte ještě dalších "+n+" znaků";
             }
         },
-        formatInputTooLong: function (input, max) {
+        formatInputTooLong(input, max) {
             var n = input.length - max;
             if (n == 1) {
                 return "Prosím zadejte o jeden znak méně";
@@ -34,7 +34,7 @@
                 return "Prosím zadejte o "+n+" znaků méně";
             }
         },
-        formatSelectionTooBig: function (limit) {
+        formatSelectionTooBig(limit) {
             if (limit == 1) {
                 return "Můžete zvolit jen jednu položku";
             } else if (limit <= 4) {
@@ -43,7 +43,7 @@
                 return "Můžete zvolit maximálně "+limit+" položek";
             }
         },
-        formatLoadMore: function (pageNumber) { return "Načítají se další výsledky…"; },
-        formatSearching: function () { return "Vyhledávání…"; }
+        formatLoadMore(pageNumber) { return "Načítají se další výsledky…"; },
+        formatSearching() { return "Vyhledávání…"; }
     });
-})(jQuery);
+}))(jQuery);

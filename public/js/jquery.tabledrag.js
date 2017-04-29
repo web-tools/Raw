@@ -6,7 +6,7 @@
  * @author Wouter Admiraal <wad@wadmiraal.net>
  */
 
-;(function($, undefined) {
+;((($, undefined) => {
 
 // Use the Drupal namespace to facilitate the fork.
 var Drupal = {};
@@ -108,7 +108,7 @@ Drupal.tableDrag = function (table, tableSettings) {
   // Add a link before the table for users to show or hide weight columns.
   $(table).before($('<a href="#" class="tabledrag-toggle-weight"></a>')
     .attr('title', Drupal.t('Re-order rows by numerical weight/parent instead of dragging.'))
-    .click(function () {
+    .click(() => {
       if ($.cookie('Drupal.tableDrag.showWeight') == 1) {
         self.hideColumns();
       }
@@ -129,8 +129,8 @@ Drupal.tableDrag = function (table, tableSettings) {
 
   // Add mouse bindings to the document. The self variable is passed along
   // as event handlers do not have direct access to the tableDrag object.
-  $(document).bind('mousemove', function (event) { return self.dragRow(event, self); });
-  $(document).bind('mouseup', function (event) { return self.dropRow(event, self); });
+  $(document).bind('mousemove', event => self.dragRow(event, self));
+  $(document).bind('mouseup', event => self.dropRow(event, self));
 };
 
 /**
@@ -340,9 +340,7 @@ Drupal.tableDrag.prototype.makeDraggable = function (item) {
   });
 
   // Prevent the anchor tag from jumping us to the top of the page.
-  handle.click(function () {
-    return false;
-  });
+  handle.click(() => false);
 
   // Similar to the hover event, add a class when the handle is focused.
   handle.focus(function () {
@@ -359,7 +357,7 @@ Drupal.tableDrag.prototype.makeDraggable = function (item) {
   });
 
   // Add arrow-key support to the handle.
-  handle.keydown(function (event) {
+  handle.keydown(event => {
     // If a rowObject doesn't yet exist and this isn't the tab key.
     if (event.keyCode != 9 && !self.rowObject) {
       self.rowObject = new self.row(item, 'keyboard', self.indentEnabled, self.maxDepth, true, self.tableSettings.draggableClass);
@@ -468,7 +466,7 @@ Drupal.tableDrag.prototype.makeDraggable = function (item) {
   // Compatibility addition, return false on keypress to prevent unwanted scrolling.
   // IE and Safari will suppress scrolling on keydown, but all other browsers
   // need to return false on keypress. http://www.quirksmode.org/js/keys.html
-  handle.keypress(function (event) {
+  handle.keypress(event => {
     switch (event.keyCode) {
       case 37: // Left arrow.
       case 38: // Up arrow.
@@ -482,7 +480,7 @@ Drupal.tableDrag.prototype.makeDraggable = function (item) {
 /**
  * Mousemove event handler, bound to document.
  */
-Drupal.tableDrag.prototype.dragRow = function (event, self) {
+Drupal.tableDrag.prototype.dragRow = (event, self) => {
   if (self.dragObject) {
     self.currentMouseCoords = self.mouseCoords(event);
 
@@ -590,7 +588,7 @@ Drupal.tableDrag.prototype.dropRow = function (event, self) {
 /**
  * Get the mouse coordinates from the event (allowing for browser differences).
  */
-Drupal.tableDrag.prototype.mouseCoords = function (event) {
+Drupal.tableDrag.prototype.mouseCoords = event => {
   if (event.pageX || event.pageY) {
     return { x: event.pageX, y: event.pageY };
   }
@@ -820,7 +818,7 @@ Drupal.tableDrag.prototype.updateField = function (changedRow, group) {
  * different one, removing any special classes that the destination row
  * may have had.
  */
-Drupal.tableDrag.prototype.copyDragClasses = function (sourceRow, targetRow, group) {
+Drupal.tableDrag.prototype.copyDragClasses = (sourceRow, targetRow, group) => {
   var sourceElement = $('.' + group, sourceRow);
   var targetElement = $('.' + group, targetRow);
   if (sourceElement.length && targetElement.length) {
@@ -853,7 +851,7 @@ Drupal.tableDrag.prototype.checkScroll = function (cursorY) {
 Drupal.tableDrag.prototype.setScroll = function (scrollAmount) {
   var self = this;
 
-  this.scrollInterval = setInterval(function () {
+  this.scrollInterval = setInterval(() => {
     // Update the scroll values stored in the object.
     self.checkScroll(self.currentMouseCoords.y);
     var aboveTable = self.scrollY > self.table.topY;
@@ -877,16 +875,12 @@ Drupal.tableDrag.prototype.restripeTable = function () {
 /**
  * Stub function. Allows a custom handler when a row begins dragging.
  */
-Drupal.tableDrag.prototype.onDrag = function () {
-  return null;
-};
+Drupal.tableDrag.prototype.onDrag = () => null;
 
 /**
  * Stub function. Allows a custom handler when a row is dropped.
  */
-Drupal.tableDrag.prototype.onDrop = function () {
-  return null;
-};
+Drupal.tableDrag.prototype.onDrop = () => null;
 
 /**
  * Constructor to make a new object to manipulate a table row.
@@ -975,7 +969,8 @@ Drupal.tableDrag.prototype.row.prototype.findChildren = function (addClasses) {
  */
 Drupal.tableDrag.prototype.row.prototype.isValidSwap = function (row) {
   if (this.indentEnabled) {
-    var prevRow, nextRow;
+    var prevRow;
+    var nextRow;
     if (this.direction == 'down') {
       prevRow = row;
       nextRow = $(row).next('tr').get(0);
@@ -1028,7 +1023,8 @@ Drupal.tableDrag.prototype.row.prototype.swap = function (position, row) {
  *   (or null for last position in the table).
  */
 Drupal.tableDrag.prototype.row.prototype.validIndentInterval = function (prevRow, nextRow) {
-  var minIndent, maxIndent;
+  var minIndent;
+  var maxIndent;
 
   // Minimum indentation:
   // Do not orphan the next row.
@@ -1158,20 +1154,14 @@ Drupal.tableDrag.prototype.row.prototype.removeIndentClasses = function () {
 /**
  * Stub function. Allows a custom handler when a row is indented.
  */
-Drupal.tableDrag.prototype.row.prototype.onIndent = function () {
-  return null;
-};
+Drupal.tableDrag.prototype.row.prototype.onIndent = () => null;
 
 /**
  * Stub function. Allows a custom handler when a row is swapped.
  */
-Drupal.tableDrag.prototype.row.prototype.onSwap = function (swappedRow) {
-  return null;
-};
+Drupal.tableDrag.prototype.row.prototype.onSwap = swappedRow => null;
 
-Drupal.t = function(string) {
-  return string;
-}
+Drupal.t = string => string
 
 Drupal.theme = function (func) {
   var args = Array.prototype.slice.apply(arguments, [1]);
@@ -1179,13 +1169,9 @@ Drupal.theme = function (func) {
   return (Drupal.theme[func] || Drupal.theme.prototype[func]).apply(this, args);
 };
 
-Drupal.theme.prototype.tableDragChangedMarker = function () {
-  return '<span class="warning tabledrag-changed">*</span>';
-};
+Drupal.theme.prototype.tableDragChangedMarker = () => '<span class="warning tabledrag-changed">*</span>';
 
-Drupal.theme.prototype.tableDragIndentation = function () {
-  return '<div class="indentation">&nbsp;</div>';
-};
+Drupal.theme.prototype.tableDragIndentation = () => '<div class="indentation">&nbsp;</div>';
 
 
-})(jQuery);
+}))(jQuery);

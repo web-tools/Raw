@@ -10,7 +10,7 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-(function($) {
+(($ => {
     $.fn.rightClick = function(func) {
         var events = "contextmenu rightclick";
         $(this).each(function() {
@@ -22,4 +22,4 @@
         });
         return $(this);
     };
-})(jQuery);
+}))(jQuery);

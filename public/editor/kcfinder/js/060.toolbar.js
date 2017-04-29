@@ -10,8 +10,8 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-_.initToolbar = function() {
-    $('#toolbar a').click(function() {
+_.initToolbar = () => {
+    $('#toolbar a').click(() => {
         _.hideDialog();
     });
 
@@ -39,7 +39,7 @@ _.initToolbar = function() {
         return false;
     });
 
-    $('#toolbar a[href="kcact:refresh"]').click(function() {
+    $('#toolbar a[href="kcact:refresh"]').click(() => {
         _.refresh();
         return false;
     });
@@ -52,7 +52,7 @@ _.initToolbar = function() {
     else
         $('#toolbar a[href="kcact:maximize"]').css('display', "none");
 
-    $('#toolbar a[href="kcact:about"]').click(function() {
+    $('#toolbar a[href="kcact:about"]').click(() => {
         var html = '<div class="box about">' +
             '<div class="head"><a href="http://kcfinder.sunhater.com" target="_blank">KCFinder</a> ' + _.version + '</div>';
         if (_.support.check4Update)
@@ -64,12 +64,12 @@ _.initToolbar = function() {
 
         var dlg = _.dialog(_.label("About"), html, {width: 301});
 
-        setTimeout(function() {
+        setTimeout(() => {
             $.ajax({
                 dataType: "json",
                 url: _.baseGetData('check4Update'),
                 async: true,
-                success: function(data) {
+                success(data) {
                     if (!dlg.html().length)
                         return;
                     var span = $('#checkver');
@@ -83,7 +83,7 @@ _.initToolbar = function() {
                     else
                         span.html(_.label("KCFinder is up to date!"));
                 },
-                error: function() {
+                error() {
                     if (!dlg.html().length)
                         return;
                     $('#checkver').removeClass('loading').html(_.label("Unable to connect!"));
@@ -97,7 +97,7 @@ _.initToolbar = function() {
     _.initUploadButton();
 };
 
-_.initUploadButton = function() {
+_.initUploadButton = () => {
     var btn = $('#toolbar a[href="kcact:upload"]');
     if (!_.access.files.upload) {
         btn.css('display', "none");
@@ -108,14 +108,14 @@ _.initUploadButton = function() {
     var height = btn.outerHeight();
     $('#toolbar').prepend('<div id="upload" style="top:' + top + 'px;width:' + width + 'px;height:' + height + 'px"><form enctype="multipart/form-data" method="post" target="uploadResponse" action="' + _.baseGetData('upload') + '"><input type="file" name="upload[]" onchange="_.uploadFile(this.form)" style="height:' + height + 'px" multiple="multiple" /><input type="hidden" name="dir" value="" /></form></div>');
     $('#upload input').css('margin-left', "-" + ($('#upload input').outerWidth() - width));
-    $('#upload').mouseover(function() {
+    $('#upload').mouseover(() => {
         $('#toolbar a[href="kcact:upload"]').addClass('hover');
-    }).mouseout(function() {
+    }).mouseout(() => {
         $('#toolbar a[href="kcact:upload"]').removeClass('hover');
     });
 };
 
-_.uploadFile = function(form) {
+_.uploadFile = form => {
     if (!_.dirWritable) {
         _.alert(_.label("Cannot write to upload folder."));
         $('#upload').detach();
@@ -130,8 +130,9 @@ _.uploadFile = function(form) {
         var response = $(this).contents().find('body').html();
         $('#loading').css('display', "none");
         response = response.split("\n");
-        var selected = [], errors = [];
-        $.each(response, function(i, row) {
+        var selected = [];
+        var errors = [];
+        $.each(response, (i, row) => {
             if (row.substr(0, 1) == "/")
                 selected[selected.length] = row.substr(1, row.length - 1);
             else
@@ -143,14 +144,14 @@ _.uploadFile = function(form) {
             selected = null;
         _.refresh(selected);
         $('#upload').detach();
-        setTimeout(function() {
+        setTimeout(() => {
             $('#uploadResponse').detach();
         }, 1);
         _.initUploadButton();
     });
 };
 
-_.maximize = function(button) {
+_.maximize = button => {
     if (window.opener) {
         window.moveTo(0, 0);
         width = screen.availWidth;
@@ -160,7 +161,9 @@ _.maximize = function(button) {
         window.resizeTo(width, height);
 
     } else if (_.opener.name == "tinymce") {
-        var win, ifr, id;
+        var win;
+        var ifr;
+        var id;
 
         $('iframe', window.parent.document).each(function() {
             if (/^mce_\d+_ifr$/.test($(this).attr('id'))) {
@@ -196,23 +199,23 @@ _.maximize = function(button) {
                 Hspace: parseInt(win.css('width')) - parseInt(ifr.css('width')),
                 Vspace: parseInt(win.css('height')) - parseInt(ifr.css('height'))
             };
-            var width = $(window.parent).width(),
-                height = $(window.parent).height();
+            var width = $(window.parent).width();
+            var height = $(window.parent).height();
             win.css({
                 left: $(window.parent).scrollLeft(),
                 top: $(window.parent).scrollTop(),
-                width: width,
-                height: height
+                width,
+                height
             });
             ifr.css({
                 width: width - _.maximizeMCE.Hspace,
                 height: height - _.maximizeMCE.Vspace
             });
         }
-
     } else if ($('iframe', window.parent.document).get(0)) {
-        var width, height,
-            ifrm = $('iframe[name="' + window.name + '"]', window.parent.document);
+        var width;
+        var height;
+        var ifrm = $('iframe[name="' + window.name + '"]', window.parent.document);
 
         if ($(button).hasClass('selected')) {
             $(button).removeClass('selected');
@@ -222,7 +225,7 @@ _.maximize = function(button) {
             }
             if (_.maximizeW) _.maximizeW = null;
             if (_.maximizeH) _.maximizeH = null;
-            $.each($('*', window.parent.document).get(), function(i, e) {
+            $.each($('*', window.parent.document).get(), (i, e) => {
                 e.style.display = _.maximizeDisplay[i];
             });
             ifrm.css({
@@ -249,7 +252,7 @@ _.maximize = function(button) {
             _.maximizeTop = $(window.parent).scrollTop();
             _.maximizeLeft = $(window.parent).scrollLeft();
             _.maximizeDisplay = [];
-            $.each($('*', window.parent.document).get(), function(i, e) {
+            $.each($('*', window.parent.document).get(), (i, e) => {
                 _.maximizeDisplay[i] = $(e).css('display');
                 $(e).css('display', "none");
             });
@@ -258,7 +261,7 @@ _.maximize = function(button) {
                 display: "block",
                 position: "absolute"
             }).parents().css('display', "block");
-            var resize = function() {
+            var resize = () => {
                 width = $(window.parent).width();
                 height = $(window.parent).height();
                 if (!_.maximizeW || (_.maximizeW != width) ||
@@ -267,8 +270,8 @@ _.maximize = function(button) {
                     _.maximizeW = width;
                     _.maximizeH = height;
                     ifrm.css({
-                        width: width,
-                        height: height
+                        width,
+                        height
                     });
                     _.resize();
                 }
@@ -289,7 +292,7 @@ _.maximize = function(button) {
     }
 };
 
-_.refresh = function(selected) {
+_.refresh = selected => {
     _.fadeFiles();
     $.ajax({
         type: "post",
@@ -297,7 +300,7 @@ _.refresh = function(selected) {
         url: _.baseGetData("chDir"),
         data: {dir: _.dir},
         async: false,
-        success: function(data) {
+        success(data) {
             if (_.check4errors(data))
                 return;
             _.dirWritable = data.dirWritable;
@@ -305,7 +308,7 @@ _.refresh = function(selected) {
             _.orderFiles(null, selected);
             _.statusDir();
         },
-        error: function() {
+        error() {
             $('#files > div').css({opacity: "", filter: ""});
             $('#files').html(_.label("Unknown error."));
         }

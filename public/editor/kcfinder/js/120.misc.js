@@ -11,8 +11,8 @@
   */
 
 _.drag = function(ev, dd) {
-    var top = dd.offsetY,
-        left = dd.offsetX;
+    var top = dd.offsetY;
+    var left = dd.offsetX;
     if (top < 0) top = 0;
     if (left < 0) left = 0;
     if (top + $(this).outerHeight() > $(window).height())
@@ -20,12 +20,12 @@ _.drag = function(ev, dd) {
     if (left + $(this).outerWidth() > $(window).width())
         left = $(window).width() - $(this).outerWidth();
     $(this).css({
-        top: top,
-        left: left
+        top,
+        left
     });
 };
 
-_.showDialog = function(e) {
+_.showDialog = e => {
     $('#dialog').css({left: 0, top: 0});
     _.shadow();
     $('#dialog').css('display', "block");
@@ -40,42 +40,38 @@ _.showDialog = function(e) {
         if (($('#dialog').outerHeight() + top) > $(window).height())
             top = $(window).height() - $('#dialog').outerHeight();
         $('#dialog').css({
-            left: left,
-            top: top
+            left,
+            top
         });
     } else
         $('#dialog').css({
             left: parseInt(($(window).width() - $('#dialog').outerWidth()) / 2),
             top: parseInt(($(window).height() - $('#dialog').outerHeight()) / 2)
         });
-    $(document).unbind('keydown').keydown(function(e) {
+    $(document).unbind('keydown').keydown(e => {
         if (e.keyCode == 27)
             _.hideDialog();
     });
 };
 
-_.hideDialog = function() {
+_.hideDialog = () => {
     _.unshadow();
     if ($('#clipboard').hasClass('selected'))
         $('#clipboard').removeClass('selected');
     $('div.folder > a > span.folder').removeClass('context');
-    $('#dialog').css('display', "none").html("").data('title', null).unbind().click(function() {
-        return false;
-    });
-    $(document).unbind('keydown').keydown(function(e) {
-        return !_.selectAll(e);
-    });
+    $('#dialog').css('display', "none").html("").data('title', null).unbind().click(() => false);
+    $(document).unbind('keydown').keydown(e => !_.selectAll(e));
 };
 
-_.shadow = function() {
+_.shadow = () => {
     $('#shadow').css('display', "block");
 };
 
-_.unshadow = function() {
+_.unshadow = () => {
     $('#shadow').css('display', "none");
 };
 
-_.showMenu = function(e) {
+_.showMenu = e => {
     var left = e.pageX;
     var top = e.pageY;
     if (($('#dialog').outerWidth() + left) > $(window).width())
@@ -83,72 +79,74 @@ _.showMenu = function(e) {
     if (($('#dialog').outerHeight() + top) > $(window).height())
         top = $(window).height() - $('#dialog').outerHeight();
     $('#dialog').css({
-        left: left,
-        top: top,
+        left,
+        top,
         display: "none"
     }).fadeIn('fast');
 };
 
-_.fileNameDialog = function(e, post, inputName, inputValue, url, labels, callBack, selectAll) {
+_.fileNameDialog = (e, post, inputName, inputValue, url, labels, callBack, selectAll) => {
     _.hideDialog();
-    var html = '<form method="post" action="javascript:;"><input name="' + inputName + '" type="text" /></form>',
-        submit = function() {
-            var name = dlg.find('[type="text"]').get(0);
-            name.value = $.trim(name.value);
-            if (name.value == "") {
-                _.alert(_.label(labels.errEmpty), function() {
-                    name.focus();
-                });
-                return false;
-            } else if (/[\/\\]/g.test(name.value)) {
-                _.alert(_.label(labels.errSlash), function() {
-                    name.focus();
-                });
-                return false;
-            } else if (name.value.substr(0, 1) == ".") {
-                _.alert(_.label(labels.errDot), function() {
-                    name.focus();
-                });
-                return false;
-            }
-            post[inputName] = name.value;
-            $.ajax({
-                type: "post",
-                dataType: "json",
-                url: url,
-                data: post,
-                async: false,
-                success: function(data) {
-                    if (_.check4errors(data, false))
-                        return;
-                    if (callBack) callBack(data);
-                    dlg.dialog("destroy").detach();
-                },
-                error: function() {
-                    _.alert(_.label("Unknown error."));
-                }
+    var html = '<form method="post" action="javascript:;"><input name="' + inputName + '" type="text" /></form>';
+
+    var submit = () => {
+        var name = dlg.find('[type="text"]').get(0);
+        name.value = $.trim(name.value);
+        if (name.value == "") {
+            _.alert(_.label(labels.errEmpty), () => {
+                name.focus();
             });
             return false;
-        },
-        dlg = _.dialog(_.label(labels.title), html, {
-            width: 351,
-            buttons: [
-                {
-                    text: _.label("OK"),
-                    click: function() {
-                        submit();
-                    }
-                },
-                {
-                    text: _.label("Cancel"),
-                    click: function() {
-                        $(this).dialog('destroy').detach();
-                    }
-                }
-            ]
-        }),
+        } else if (/[\/\\]/g.test(name.value)) {
+            _.alert(_.label(labels.errSlash), () => {
+                name.focus();
+            });
+            return false;
+        } else if (name.value.substr(0, 1) == ".") {
+            _.alert(_.label(labels.errDot), () => {
+                name.focus();
+            });
+            return false;
+        }
+        post[inputName] = name.value;
+        $.ajax({
+            type: "post",
+            dataType: "json",
+            url,
+            data: post,
+            async: false,
+            success(data) {
+                if (_.check4errors(data, false))
+                    return;
+                if (callBack) callBack(data);
+                dlg.dialog("destroy").detach();
+            },
+            error() {
+                _.alert(_.label("Unknown error."));
+            }
+        });
+        return false;
+    };
 
-        field = dlg.find('[type="text"]');
+    var dlg = _.dialog(_.label(labels.title), html, {
+        width: 351,
+        buttons: [
+            {
+                text: _.label("OK"),
+                click() {
+                    submit();
+                }
+            },
+            {
+                text: _.label("Cancel"),
+                click() {
+                    $(this).dialog('destroy').detach();
+                }
+            }
+        ]
+    });
+
+    var field = dlg.find('[type="text"]');
 
     field.uniform().attr('value', inputValue).css('width', 310);
     dlg.find('form').submit(submit);
@@ -161,15 +159,17 @@ _.fileNameDialog = function(e, post, inputName, inputValue, url, labels, callBac
     }
 };
 
-_.orderFiles = function(callBack, selected) {
+_.orderFiles = (callBack, selected) => {
     var order = $.$.kuki.get('order');
     var desc = ($.$.kuki.get('orderDesc') == "on");
 
     if (!_.files || !_.files.sort)
         _.files = [];
 
-    _.files = _.files.sort(function(a, b) {
-        var a1, b1, arr;
+    _.files = _.files.sort((a, b) => {
+        var a1;
+        var b1;
+        var arr;
         if (!order) order = "name";
 
         if (order == "date") {
@@ -209,7 +209,7 @@ _.orderFiles = function(callBack, selected) {
     _.initFiles();
 };
 
-_.humanSize = function(size) {
+_.humanSize = size => {
     if (size < 1024) {
         size = size.toString() + " B";
     } else if (size < 1048576) {
@@ -228,7 +228,7 @@ _.humanSize = function(size) {
     return size;
 };
 
-_.baseGetData = function(act) {
+_.baseGetData = act => {
     var data = "browse.php?type=" + encodeURIComponent(_.type) + "&lng=" + _.lang;
     if (act)
         data += "&act=" + act;
@@ -237,16 +237,16 @@ _.baseGetData = function(act) {
     return data;
 };
 
-_.label = function(index, data) {
+_.label = (index, data) => {
     var label = _.labels[index] ? _.labels[index] : index;
     if (data)
-        $.each(data, function(key, val) {
+        $.each(data, (key, val) => {
             label = label.replace("{" + key + "}", val);
         });
     return label;
 };
 
-_.check4errors = function(data, shadow) {
+_.check4errors = (data, shadow) => {
     if (!data.error)
         return false;
     var msg;
@@ -258,11 +258,11 @@ _.check4errors = function(data, shadow) {
     return true;
 };
 
-_.post = function(url, data) {
+_.post = (url, data) => {
     var html = '<form id="postForm" method="post" action="' + url + '">';
-    $.each(data, function(key, val) {
+    $.each(data, (key, val) => {
         if ($.isArray(val))
-            $.each(val, function(i, aval) {
+            $.each(val, (i, aval) => {
                 html += '<input type="hidden" name="' + $.$.htmlValue(key) + '[]" value="' + $.$.htmlValue(aval) + '" />';
             });
         else
@@ -273,7 +273,7 @@ _.post = function(url, data) {
     $('#postForm').get(0).submit();
 };
 
-_.fadeFiles = function() {
+_.fadeFiles = () => {
     $('#files > div').css({
         opacity: "0.4",
         filter: "alpha(opacity=40)"

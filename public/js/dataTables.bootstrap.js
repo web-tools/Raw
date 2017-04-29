@@ -18,15 +18,19 @@ $.extend($.fn.dataTableExt.oStdClasses, {
 // rather than  custom plug-in
 if ($.fn.dataTable.Api) {
     $.fn.dataTable.defaults.renderer = 'bootstrap';
-    $.fn.dataTable.ext.renderer.pageButton.bootstrap = function(settings, host, idx, buttons, page, pages) {
+    $.fn.dataTable.ext.renderer.pageButton.bootstrap = (settings, host, idx, buttons, page, pages) => {
         var api = new $.fn.dataTable.Api(settings);
         var classes = settings.oClasses;
         var lang = settings.oLanguage.oPaginate;
-        var btnDisplay, btnClass;
+        var btnDisplay;
+        var btnClass;
 
-        var attach = function(container, buttons) {
-            var i, ien, node, button;
-            var clickHandler = function(e) {
+        var attach = (container, buttons) => {
+            var i;
+            var ien;
+            var node;
+            var button;
+            var clickHandler = e => {
                 e.preventDefault();
                 if (e.data.action !== 'ellipsis') {
                     api.page(e.data.action).draw(false);
@@ -113,24 +117,22 @@ if ($.fn.dataTable.Api) {
     $.fn.dataTable.defaults.sPaginationType = 'bootstrap';
 
     /* API method to get paging information */
-    $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
-        return {
-            "iStart": oSettings._iDisplayStart,
-            "iEnd": oSettings.fnDisplayEnd(),
-            "iLength": oSettings._iDisplayLength,
-            "iTotal": oSettings.fnRecordsTotal(),
-            "iFilteredTotal": oSettings.fnRecordsDisplay(),
-            "iPage": oSettings._iDisplayLength === -1 ? 0 : Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
-            "iTotalPages": oSettings._iDisplayLength === -1 ? 0 : Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
-        };
-    };
+    $.fn.dataTableExt.oApi.fnPagingInfo = oSettings => ({
+        "iStart": oSettings._iDisplayStart,
+        "iEnd": oSettings.fnDisplayEnd(),
+        "iLength": oSettings._iDisplayLength,
+        "iTotal": oSettings.fnRecordsTotal(),
+        "iFilteredTotal": oSettings.fnRecordsDisplay(),
+        "iPage": oSettings._iDisplayLength === -1 ? 0 : Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+        "iTotalPages": oSettings._iDisplayLength === -1 ? 0 : Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+    });
 
     /* Bootstrap style pagination control */
     $.extend($.fn.dataTableExt.oPagination, {
         "bootstrap": {
             "fnInit": function(oSettings, nPaging, fnDraw) {
                 var oLang = oSettings.oLanguage.oPaginate;
-                var fnClickHandler = function(e) {
+                var fnClickHandler = e => {
                     e.preventDefault();
                     if (oSettings.oApi._fnPageChange(oSettings, e.data.action)) {
                         fnDraw(oSettings);
@@ -156,7 +158,13 @@ if ($.fn.dataTable.Api) {
                 var iListLength = 5;
                 var oPaging = oSettings.oInstance.fnPagingInfo();
                 var an = oSettings.aanFeatures.p;
-                var i, ien, j, sClass, iStart, iEnd, iHalf = Math.floor(iListLength / 2);
+                var i;
+                var ien;
+                var j;
+                var sClass;
+                var iStart;
+                var iEnd;
+                var iHalf = Math.floor(iListLength / 2);
 
                 if (oPaging.iTotalPages < iListLength) {
                     iStart = 1;

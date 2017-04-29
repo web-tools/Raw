@@ -10,13 +10,13 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-_.initSettings = function() {
+_.initSettings = () => {
 
     $('#settings fieldset, #settings input, #settings label').uniform();
 
     if (!_.shows.length) {
         var showInputs = $('#show input[type="checkbox"]').toArray();
-        $.each(showInputs, function (i, input) {
+        $.each(showInputs, (i, input) => {
             _.shows[i] = input.name;
         });
     }
@@ -25,7 +25,7 @@ _.initSettings = function() {
 
     if (!$.$.kuki.isSet('showname')) {
         $.$.kuki.set('showname', "on");
-        $.each(shows, function (i, val) {
+        $.each(shows, (i, val) => {
             if (val != "name") $.$.kuki.set('show' + val, "off");
         });
     }
@@ -39,14 +39,14 @@ _.initSettings = function() {
             $('#files .file div.' + $(this).get(0).name).css('display', "none");
     });
 
-    $.each(shows, function(i, val) {
+    $.each(shows, (i, val) => {
         var checked = ($.$.kuki.get('show' + val) == "on") ? "checked" : "";
         $('#show input[name="' + val + '"]').get(0).checked = checked;
     });
 
     if (!_.orders.length) {
         var orderInputs = $('#order input[type="radio"]').toArray();
-        $.each(orderInputs, function (i, input) {
+        $.each(orderInputs, (i, input) => {
             _.orders[i] = input.value;
         });
     }
@@ -93,7 +93,7 @@ _.initSettings = function() {
                     $(this).parent().addClass('checked').parent().addClass('disabled');
                 });
             } else {
-                $.each(_.shows, function(i, val) {
+                $.each(_.shows, (i, val) => {
                     var input = $('#show input[name="' + val + '"]');
                     input.get(0).checked = ($.$.kuki.get('show' + val) == "on");
                     if (!input.get(0).checked)

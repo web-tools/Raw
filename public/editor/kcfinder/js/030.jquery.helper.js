@@ -10,7 +10,7 @@
   *      @link http://kcfinder.sunhater.com
   */
 
-(function($) {
+(($ => {
 
     $.fn.selection = function(start, end) {
         var field = this.get(0);
@@ -31,8 +31,9 @@
     };
 
     $.fn.outerSpace = function(type, mbp) {
-        var selector = this.get(0),
-            r = 0, x;
+        var selector = this.get(0);
+        var r = 0;
+        var x;
 
         if (!mbp) mbp = "mbp";
 
@@ -80,7 +81,7 @@
 
     $.$ = {
 
-        unselect: function() {
+        unselect() {
             if (document.selection && document.selection.empty)
                 document.selection.empty() ;
             else if (window.getSelection) {
@@ -90,14 +91,14 @@
             }
         },
 
-        htmlValue: function(value) {
+        htmlValue(value) {
             return value
                 .replace(/\&/g, "&amp;")
                 .replace(/\"/g, "&quot;")
                 .replace(/\'/g, "&#39;");
         },
 
-        htmlData: function(value) {
+        htmlData(value) {
             return value
                 .replace(/\&/g, "&amp;")
                 .replace(/\</g, "&lt;")
@@ -105,7 +106,7 @@
                 .replace(/\ /g, "&nbsp;");
         },
 
-        jsValue: function(value) {
+        jsValue(value) {
             return value
                 .replace(/\\/g, "\\\\")
                 .replace(/\r?\n/, "\\\n")
@@ -113,19 +114,19 @@
                 .replace(/\'/g, "\\'");
         },
 
-        basename: function(path) {
+        basename(path) {
             return /^.*\/([^\/]+)\/?$/g.test(path)
                 ? path.replace(expr, "$1")
                 : path;
         },
 
-        dirname: function(path) {
+        dirname(path) {
             return /^(.*)\/[^\/]+\/?$/g.test(path)
                 ? path.replace(expr, "$1")
                 : '';
         },
 
-        inArray: function(needle, arr) {
+        inArray(needle, arr) {
             if ((typeof arr == 'undefined') || !arr.length || !arr.push)
                 return false;
             for (var i = 0; i < arr.length; i++)
@@ -134,7 +135,7 @@
             return false;
         },
 
-        getFileExtension: function(filename, toLower) {
+        getFileExtension(filename, toLower) {
             if (typeof toLower == 'undefined') toLower = true;
             if (/^.*\.[^\.]*$/.test(filename)) {
                 var ext = filename.replace(/^.*\.([^\.]*)$/, "$1");
@@ -143,9 +144,9 @@
                 return "";
         },
 
-        escapeDirs: function(path) {
-            var fullDirExpr = /^([a-z]+)\:\/\/([^\/^\:]+)(\:(\d+))?\/(.+)$/,
-                prefix = "";
+        escapeDirs(path) {
+            var fullDirExpr = /^([a-z]+)\:\/\/([^\/^\:]+)(\:(\d+))?\/(.+)$/;
+            var prefix = "";
             if (fullDirExpr.test(path)) {
                 var port = path.replace(fullDirExpr, "$4");
                 prefix = path.replace(fullDirExpr, "$1://$2");
@@ -155,8 +156,9 @@
                 path = path.replace(fullDirExpr, "$5");
             }
 
-            var dirs = path.split('/'),
-                escapePath = '', i = 0;
+            var dirs = path.split('/');
+            var escapePath = '';
+            var i = 0;
             for (; i < dirs.length; i++)
                 escapePath += encodeURIComponent(dirs[i]) + '/';
 
@@ -170,7 +172,7 @@
             path: '',
             secure: false,
 
-            set: function(name, value, duration, domain, path, secure) {
+            set(name, value, duration, domain, path, secure) {
                 name = this.prefix + name;
                 if (duration == null) duration = this.duration;
                 if (secure == null) secure = this.secure;
@@ -190,7 +192,7 @@
                 return (document.cookie = str) ? true : false;
             },
 
-            get: function(name) {
+            get(name) {
                 name = this.prefix + name;
                 var nameEQ = name + '=';
                 var kukis = document.cookie.split(';');
@@ -208,15 +210,15 @@
                 return null;
             },
 
-            del: function(name) {
+            del(name) {
                 return this.set(name, '', -1);
             },
 
-            isSet: function(name) {
+            isSet(name) {
                 return (this.get(name) != null);
             }
         }
 
     };
 
-})(jQuery);
+}))(jQuery);

@@ -3,14 +3,14 @@
  * 
  * Author: Leandro Regueiro <leandro.regueiro@gmail.com>
  */
-(function ($) {
+(($ => {
     "use strict";
 
     $.extend($.fn.select2.defaults, {
-        formatNoMatches: function () {
+        formatNoMatches() {
             return "Non se atoparon resultados";
         },
-        formatInputTooShort: function (input, min) {
+        formatInputTooShort(input, min) {
             var n = min - input.length;
             if (n === 1) {
                 return "Engada un carácter";
@@ -18,7 +18,7 @@
                 return "Engada " + n + " caracteres";
             }
         },
-        formatInputTooLong: function (input, max) {
+        formatInputTooLong(input, max) {
             var n = input.length - max;
             if (n === 1) {
                 return "Elimine un carácter";
@@ -26,18 +26,18 @@
                 return "Elimine " + n + " caracteres";
             }
         },
-        formatSelectionTooBig: function (limit) {
+        formatSelectionTooBig(limit) {
             if (limit === 1 ) {
                 return "Só pode seleccionar un elemento";
             } else {
                 return "Só pode seleccionar " + limit + " elementos";
             }
         },
-        formatLoadMore: function (pageNumber) {
+        formatLoadMore(pageNumber) {
             return "Cargando máis resultados…";
         },
-        formatSearching: function () {
+        formatSearching() {
             return "Buscando…";
         }
     });
-})(jQuery);
+}))(jQuery);
